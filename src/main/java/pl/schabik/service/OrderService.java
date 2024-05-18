@@ -8,14 +8,10 @@ import pl.schabik.controller.OrderAddressDto;
 import pl.schabik.controller.OrderItemDto;
 import pl.schabik.exception.CustomerNotFoundException;
 import pl.schabik.exception.OrderNotFoundException;
-import pl.schabik.model.Customer;
-import pl.schabik.model.Order;
-import pl.schabik.model.OrderAddress;
-import pl.schabik.model.OrderItem;
+import pl.schabik.model.*;
 import pl.schabik.repository.CustomerRepository;
 import pl.schabik.repository.OrderRepository;
 
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,27 +24,26 @@ public class OrderService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public UUID createOrder(CreateOrderDto createOrderDto) {
+    public OrderId createOrder(CreateOrderDto createOrderDto) {
         var customer = findCustomerById(createOrderDto.customerId());
         var items = convertToOrderItems(createOrderDto.items());
         var orderAddress = createOrderAddress(createOrderDto.address());
 
-        var order = new Order(customer, createOrderDto.price().setScale(2, RoundingMode.HALF_EVEN),
+        var order = new Order(customer, new Money(createOrderDto.price()),
                 items, orderAddress);
 
         return orderRepository.save(order).getId();
     }
 
-
     //TODO
     @Transactional
-    public void pay(UUID orderId) {
+    public void pay(OrderId orderId) {
         var order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
         order.pay();
     }
 
     @Transactional(readOnly = true)
-    public Order getOrderById(UUID orderId) {
+    public Order getOrderById(OrderId orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException(orderId));
     }
 
@@ -61,9 +56,9 @@ public class OrderService {
         return itemDtos.stream()
                 .map(itemDto -> new OrderItem(
                         itemDto.productId(),
-                        itemDto.price().setScale(2, RoundingMode.HALF_EVEN),
-                        itemDto.quantity(),
-                        itemDto.totalPrice().setScale(2, RoundingMode.HALF_EVEN)
+                        new Money(itemDto.price()),
+                        new Quantity(itemDto.quantity()),
+                        new Money(itemDto.totalPrice())
                 )).toList();
     }
 

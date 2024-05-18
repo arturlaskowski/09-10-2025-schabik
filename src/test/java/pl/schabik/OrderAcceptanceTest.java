@@ -1,7 +1,6 @@
 
 package pl.schabik;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import pl.schabik.controller.CreateOrderDto;
 import pl.schabik.controller.OrderAddressDto;
 import pl.schabik.controller.OrderItemDto;
-import pl.schabik.model.Customer;
-import pl.schabik.model.Order;
-import pl.schabik.model.OrderStatus;
+import pl.schabik.model.*;
 import pl.schabik.repository.CustomerRepository;
 import pl.schabik.repository.OrderRepository;
 
@@ -55,11 +52,11 @@ class OrderAcceptanceTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        var savedOrder = orderRepository.findById(response.getBody()).orElseThrow();
+        var savedOrder = orderRepository.findById(new OrderId(response.getBody())).orElseThrow();
         assertThat(savedOrder)
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
-                .hasFieldOrPropertyWithValue("price", createOrderDto.price())
+                .hasFieldOrPropertyWithValue("price", new Money(createOrderDto.price()))
                 .hasFieldOrPropertyWithValue("status", OrderStatus.PENDING)
                 .extracting(Order::getAddress)
                 .hasFieldOrPropertyWithValue("street", createOrderDto.address().street())
@@ -70,9 +67,9 @@ class OrderAcceptanceTest {
         assertThat(savedOrder.getItems()).hasSize(createOrderDto.items().size())
                 .zipSatisfy(createOrderDto.items(), (orderItem, orderItemDto) -> {
                     assertThat(orderItem.getProductId()).isEqualTo(orderItemDto.productId());
-                    assertThat(orderItem.getPrice()).isEqualTo(orderItemDto.price());
-                    assertThat(orderItem.getQuantity()).isEqualTo(orderItemDto.quantity());
-                    assertThat(orderItem.getTotalPrice()).isEqualTo(orderItemDto.totalPrice());
+                    assertThat(orderItem.getPrice()).isEqualTo(new Money(orderItemDto.price()));
+                    assertThat(orderItem.getQuantity()).isEqualTo(new Quantity(orderItemDto.quantity()));
+                    assertThat(orderItem.getTotalPrice()).isEqualTo(new Money(orderItemDto.totalPrice()));
                 });
     }
 

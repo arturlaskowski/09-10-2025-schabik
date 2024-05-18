@@ -52,7 +52,7 @@ class OrderServiceTest {
         assertThat(savedOrder)
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
-                .hasFieldOrPropertyWithValue("price", createOrderDto.price())
+                .hasFieldOrPropertyWithValue("price", new Money(createOrderDto.price()))
                 .hasFieldOrPropertyWithValue("status", OrderStatus.PENDING)
                 .extracting(Order::getAddress)
                 .hasFieldOrPropertyWithValue("street", createOrderDto.address().street())
@@ -63,9 +63,9 @@ class OrderServiceTest {
         assertThat(savedOrder.getItems()).hasSize(createOrderDto.items().size())
                 .zipSatisfy(createOrderDto.items(), (orderItem, orderItemDto) -> {
                     assertThat(orderItem.getProductId()).isEqualTo(orderItemDto.productId());
-                    assertThat(orderItem.getPrice()).isEqualTo(orderItemDto.price());
-                    assertThat(orderItem.getQuantity()).isEqualTo(orderItemDto.quantity());
-                    assertThat(orderItem.getTotalPrice()).isEqualTo(orderItemDto.totalPrice());
+                    assertThat(orderItem.getPrice()).isEqualTo(new Money(orderItemDto.price()));
+                    assertThat(orderItem.getQuantity()).isEqualTo(new Quantity(orderItemDto.quantity()));
+                    assertThat(orderItem.getTotalPrice()).isEqualTo(new Money(orderItemDto.totalPrice()));
                 });
     }
 
@@ -99,7 +99,7 @@ class OrderServiceTest {
     @Test
     void shouldThrowExceptionWhenOrderDoesNotExistForPayment() {
         // given
-        var nonExistentOrderId = UUID.randomUUID();
+        var nonExistentOrderId = new OrderId(UUID.randomUUID());
 
         // expected
         assertThatThrownBy(() -> orderService.pay(nonExistentOrderId))
@@ -121,7 +121,7 @@ class OrderServiceTest {
         assertThat(order)
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
-                .hasFieldOrPropertyWithValue("price", createOrderDto.price())
+                .hasFieldOrPropertyWithValue("price", new Money(createOrderDto.price()))
                 .hasFieldOrPropertyWithValue("status", OrderStatus.PENDING)
                 .extracting(Order::getAddress)
                 .hasFieldOrPropertyWithValue("street", createOrderDto.address().street())
@@ -132,16 +132,16 @@ class OrderServiceTest {
         assertThat(order.getItems()).hasSize(createOrderDto.items().size())
                 .zipSatisfy(createOrderDto.items(), (orderItem, orderItemDto) -> {
                     assertThat(orderItem.getProductId()).isEqualTo(orderItemDto.productId());
-                    assertThat(orderItem.getPrice()).isEqualTo(orderItemDto.price());
-                    assertThat(orderItem.getQuantity()).isEqualTo(orderItemDto.quantity());
-                    assertThat(orderItem.getTotalPrice()).isEqualTo(orderItemDto.totalPrice());
+                    assertThat(orderItem.getPrice()).isEqualTo(new Money(orderItemDto.price()));
+                    assertThat(orderItem.getQuantity()).isEqualTo(new Quantity(orderItemDto.quantity()));
+                    assertThat(orderItem.getTotalPrice()).isEqualTo(new Money(orderItemDto.totalPrice()));
                 });
     }
 
     @Test
     void shouldThrowExceptionWhenOrderDoesNotExist() {
         // given
-        var nonExistentOrderId = UUID.randomUUID();
+        var nonExistentOrderId = new OrderId(UUID.randomUUID());
 
         // expected
         assertThatThrownBy(() -> orderService.getOrderById(nonExistentOrderId))

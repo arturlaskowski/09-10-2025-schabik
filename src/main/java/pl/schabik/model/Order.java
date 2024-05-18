@@ -1,16 +1,12 @@
 package pl.schabik.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import static pl.schabik.model.OrderStatus.PAID;
 import static pl.schabik.model.OrderStatus.PENDING;
@@ -21,7 +17,7 @@ import static pl.schabik.model.OrderStatus.PENDING;
 public class Order {
 
     @Id
-    private UUID id;
+    private OrderId id;
 
     @NotNull
     private Instant createAt;
@@ -35,8 +31,8 @@ public class Order {
     private Customer customer;
 
     @NotNull
-    @Min(0)
-    private BigDecimal price;
+    @AttributeOverride(name = "amount", column = @Column(name = "price"))
+    private Money price;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -57,7 +53,7 @@ public class Order {
     protected Order() {
     }
 
-    public Order(Customer customer, BigDecimal price, List<OrderItem> items, OrderAddress address) {
+    public Order(Customer customer, Money price, List<OrderItem> items, OrderAddress address) {
         this.customer = customer;
         this.price = price;
         this.items = items;
@@ -66,7 +62,7 @@ public class Order {
     }
 
     private void initialize() {
-        this.id = UUID.randomUUID();
+        this.id = OrderId.newOne();
         this.createAt = Instant.now();
         this.lastUpdateAt = Instant.now();
         this.status = PENDING;
@@ -74,14 +70,11 @@ public class Order {
         initializeBasketItems();
     }
 
-    private void validatePrice(BigDecimal price, List<OrderItem> items) {
-        if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new OrderDomainException("Order price: " + price + " must be greater than zero");
-        }
+    private void validatePrice(Money price, List<OrderItem> items) {
 
-        BigDecimal itemsTotalCost = items.stream()
+        Money itemsTotalCost = items.stream()
                 .map(OrderItem::getTotalPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add).setScale(2, RoundingMode.HALF_EVEN);
+                .reduce(Money.ZERO, Money::add);
 
         if (!price.equals(itemsTotalCost)) {
             throw new OrderDomainException("Total order price: " + price
@@ -112,7 +105,7 @@ public class Order {
         return PAID == status;
     }
 
-    public UUID getId() {
+    public OrderId getId() {
         return id;
     }
 
@@ -128,7 +121,7 @@ public class Order {
         return customer;
     }
 
-    public BigDecimal getPrice() {
+    public Money getPrice() {
         return price;
     }
 

@@ -1,10 +1,8 @@
 package pl.schabik.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 
@@ -24,43 +22,33 @@ public class OrderItem {
     private UUID productId;
 
     @NotNull
-    @Min(0)
-    private BigDecimal price;
+    @AttributeOverride(name = "amount", column = @Column(name = "price"))
+    private Money price;
 
     @NotNull
-    @Min(0)
-    private Integer quantity;
+    @AttributeOverride(name = "value", column = @Column(name = "quantity"))
+    private Quantity quantity;
 
     @NotNull
-    @Min(0)
-    private BigDecimal totalPrice;
+    @AttributeOverride(name = "amount", column = @Column(name = "totalPrice"))
+    private Money totalPrice;
 
     //For JPA
     protected OrderItem() {
     }
 
-    public OrderItem(UUID productId, BigDecimal price, Integer quantity, BigDecimal totalPrice) {
+    public OrderItem(UUID productId, Money price, Quantity quantity, Money totalPrice) {
         this.productId = productId;
         this.price = price;
         this.quantity = quantity;
         this.totalPrice = totalPrice;
-        validateQuantity();
         validatePrice();
     }
 
-    private void validateQuantity() {
-        if (quantity < 0) {
-            throw new OrderDomainException("Quantity must be non-negative but was: " + quantity);
-        }
-    }
-
     private void validatePrice() {
-        if (price.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new OrderDomainException("Price must be greater than zero but was: " + price);
-        }
-        if (!price.multiply(BigDecimal.valueOf(quantity)).equals(totalPrice)) {
+        if (!price.multiply(quantity.value()).equals(totalPrice)) {
             throw new OrderDomainException("Total price should be equal to price multiplied by quantity. Expected: " +
-                    price.multiply(BigDecimal.valueOf(quantity)) + " but was: " + totalPrice);
+                    price.multiply(quantity.value()) + " but was: " + totalPrice);
         }
     }
 
@@ -77,15 +65,15 @@ public class OrderItem {
         return productId;
     }
 
-    public BigDecimal getPrice() {
+    public Money getPrice() {
         return price;
     }
 
-    public Integer getQuantity() {
+    public Quantity getQuantity() {
         return quantity;
     }
 
-    public BigDecimal getTotalPrice() {
+    public Money getTotalPrice() {
         return totalPrice;
     }
 }

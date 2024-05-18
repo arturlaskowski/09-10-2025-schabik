@@ -20,6 +20,6 @@ public class OrderController {
 
     @PostMapping
     public UUID createOrder(@RequestBody @Valid CreateOrderDto createOrderDto) {
-        return orderService.createOrder(createOrderDto);
+        return orderService.createOrder(createOrderDto).id();
     }
 }

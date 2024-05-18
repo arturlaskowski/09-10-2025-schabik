@@ -1,14 +1,14 @@
 package pl.schabik.exception;
 
-import java.util.UUID;
+import pl.schabik.model.OrderId;
 
 public class OrderNotFoundException extends RuntimeException {
 
-    public static String createExceptionMessage(UUID orderId) {
-        return String.format("Could not find order with orderId:  %s", orderId);
+    public static String createExceptionMessage(OrderId orderId) {
+        return String.format("Could not find order with orderId:  %s", orderId.id());
     }
 
-    public OrderNotFoundException(UUID orderId) {
+    public OrderNotFoundException(OrderId orderId) {
         super(createExceptionMessage(orderId));
     }
 }

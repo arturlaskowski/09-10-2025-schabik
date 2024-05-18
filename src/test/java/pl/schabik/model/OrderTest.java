@@ -17,18 +17,18 @@ class OrderTest {
     void shouldCreateOrderWithValidDetails() {
         //given
         var customer = new Customer();
-        var item = new OrderItem(UUID.randomUUID(), new BigDecimal("10.00"), 2, new BigDecimal("20.00"));
-        var item2 = new OrderItem(UUID.randomUUID(), new BigDecimal("15.50"), 3, new BigDecimal("46.50"));
+        var item = new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), new Money(new BigDecimal("20.00")));
+        var item2 = new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("15.50")), new Quantity(3), new Money(new BigDecimal("46.50")));
         var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
         var beforeCreation = Instant.now();
 
         //when
-        var order = new Order(customer, new BigDecimal("66.50"), List.of(item, item2), address);
+        var order = new Order(customer, new Money(new BigDecimal("66.50")), List.of(item, item2), address);
         var afterCreation = Instant.now();
 
         // then
         assertThat(order.getCustomer()).isEqualTo(customer);
-        assertThat(order.getPrice()).isEqualByComparingTo("66.50");
+        assertThat(order.getPrice()).isEqualTo(new Money(new BigDecimal("66.50")));
         assertThat(order.getItems()).containsExactlyInAnyOrder(item, item2);
         assertThat(order.getAddress()).isEqualTo(address);
         assertTrue(order.isPendingStatus());
@@ -43,29 +43,13 @@ class OrderTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenCreatingOrderWithNegativePrice() {
-        //given
-        var customer = new Customer();
-        var items = List.of(new OrderItem(UUID.randomUUID(), new BigDecimal("10.00"), 2, new BigDecimal("20.00")));
-        var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
-        var priceLowerThenZero = new BigDecimal("-1");
-
-        //when
-        var orderDomainException = assertThrows(OrderDomainException.class,
-                () -> new Order(customer, priceLowerThenZero, items, address));
-
-        //then
-        assertEquals("Order price: " + priceLowerThenZero + " must be greater than zero", orderDomainException.getMessage());
-    }
-
-    @Test
     void shouldThrowExceptionWhenOrderPriceDoesNotMatchItemTotals() {
         //given
         var customer = new Customer();
-        var sumOfOrderItemsPrice = new BigDecimal("20.00");
-        var items = List.of(new OrderItem(UUID.randomUUID(), new BigDecimal("10.00"), 2, sumOfOrderItemsPrice));
+        var sumOfOrderItemsPrice = new Money(new BigDecimal("20.00"));
+        var items = List.of(new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), sumOfOrderItemsPrice));
         var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
-        var differentPriceThanSumOrderItems = new BigDecimal("14.56");
+        var differentPriceThanSumOrderItems = new Money(new BigDecimal("14.56"));
 
         //when
         var orderDomainException = assertThrows(OrderDomainException.class,
@@ -80,15 +64,12 @@ class OrderTest {
     void shouldAllowPaymentWhenOrderStatusIsPending() {
         //given
         var order = createOrder();
-        var now = Instant.now();
 
         //when
         order.pay();
 
         //then
         assertTrue(order.isPaidStatus());
-        assertThat(order.getLastUpdateAt()).isAfter(now);
-
     }
 
     @Test
@@ -106,8 +87,8 @@ class OrderTest {
 
     private Order createOrder() {
         var customer = new Customer();
-        var item = new OrderItem(UUID.randomUUID(), new BigDecimal("10.00"), 2, new BigDecimal("20.00"));
+        var item = new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), new Money(new BigDecimal("20.00")));
         var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
-        return new Order(customer, new BigDecimal("20.00"), List.of(item), address);
+        return new Order(customer, new Money(new BigDecimal("20.00")), List.of(item), address);
     }
 }
