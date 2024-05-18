@@ -9,12 +9,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.schabik.controller.CreateOrderDto;
-import pl.schabik.controller.OrderAddressDto;
-import pl.schabik.controller.OrderItemDto;
-import pl.schabik.model.*;
-import pl.schabik.repository.CustomerRepository;
-import pl.schabik.repository.OrderRepository;
+import pl.schabik.application.dto.*;
+import pl.schabik.domain.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -76,9 +72,9 @@ class OrderAcceptanceTest {
     private CreateOrderDto createOrderDto() {
         var customerId = customerRepository.save(new Customer("Waldek", "Kiepski", "waldek@gmail.com")).getId();
 
-        var items = List.of(new OrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
-                new OrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
-        var address = new OrderAddressDto("Małysza", "94-000", "Adasiowo", "12");
+        var items = List.of(new CreateOrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
+                new CreateOrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
+        var address = new CreateOrderAddressDto("Małysza", "94-000", "Adasiowo", "12");
         return new CreateOrderDto(customerId, new BigDecimal("54.56"), items, address);
     }
 

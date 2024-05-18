@@ -8,10 +8,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.schabik.controller.CreateCustomerDto;
-import pl.schabik.controller.CustomerDto;
-import pl.schabik.exception.ErrorResponse;
-import pl.schabik.service.CustomerService;
+import pl.schabik.application.dto.CreateCustomerDto;
+import pl.schabik.application.dto.CustomerDto;
+import pl.schabik.infrastructure.ErrorResponse;
+import pl.schabik.application.CustomerService;
 
 import java.util.UUID;
 
