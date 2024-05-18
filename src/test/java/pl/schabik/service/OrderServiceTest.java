@@ -2,16 +2,12 @@ package pl.schabik.service;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import pl.schabik.controller.CreateOrderDto;
 import pl.schabik.controller.OrderAddressDto;
 import pl.schabik.controller.OrderItemDto;
 import pl.schabik.exception.CustomerNotFoundException;
 import pl.schabik.exception.OrderNotFoundException;
 import pl.schabik.model.*;
-import pl.schabik.repository.CustomerRepository;
-import pl.schabik.repository.OrderRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,17 +16,11 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@SpringBootTest
 class OrderServiceTest {
 
-    @Autowired
-    private OrderService orderService;
-
-    @Autowired
-    private OrderRepository orderRepository;
-
-    @Autowired
-    private CustomerRepository customerRepository;
+    InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
+    InMemoryCustomerRepository customerRepository = new InMemoryCustomerRepository();
+    OrderService orderService = new OrderService(orderRepository, customerRepository);
 
     @AfterEach
     void cleanUp() {

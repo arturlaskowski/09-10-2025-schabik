@@ -1,6 +1,5 @@
 package pl.schabik.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.schabik.controller.CreateOrderDto;
@@ -18,11 +17,13 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
-    @Autowired
-    private OrderRepository orderRepository;
+    private final OrderRepository orderRepository;
+    private final CustomerRepository customerRepository;
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    public OrderService(OrderRepository orderRepository, CustomerRepository customerRepository) {
+        this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
+    }
 
     public OrderId createOrder(CreateOrderDto createOrderDto) {
         var customer = findCustomerById(createOrderDto.customerId());

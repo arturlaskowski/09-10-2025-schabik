@@ -1,6 +1,5 @@
 package pl.schabik.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.schabik.controller.CreateCustomerDto;
 import pl.schabik.controller.CustomerDto;
@@ -14,8 +13,11 @@ import java.util.UUID;
 @Service
 public class CustomerService {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     public CustomerDto getCustomer(UUID id) {
         return customerRepository.findById(id)

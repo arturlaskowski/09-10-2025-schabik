@@ -1,8 +1,13 @@
 package pl.schabik.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import pl.schabik.model.Order;
 import pl.schabik.model.OrderId;
 
-public interface OrderRepository extends JpaRepository<Order, OrderId> {
+import java.util.Optional;
+
+public interface OrderRepository {
+
+    Order save(Order order);
+
+    Optional<Order> findById(OrderId id);
 }

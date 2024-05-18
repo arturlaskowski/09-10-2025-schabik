@@ -1,7 +1,6 @@
 package pl.schabik.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.schabik.service.CustomerService;
@@ -12,8 +11,11 @@ import java.util.UUID;
 @RequestMapping("/customers")
 public class CustomerController {
 
-    @Autowired
-    private CustomerService customerService;
+    private final CustomerService customerService;
+
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerDto> getCustomer(@PathVariable UUID id) {
