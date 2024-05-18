@@ -35,51 +35,57 @@ public class OrderItem {
     @Min(0)
     private BigDecimal totalPrice;
 
+    //For JPA
+    protected OrderItem() {
+    }
+
+    public OrderItem(UUID productId, BigDecimal price, Integer quantity, BigDecimal totalPrice) {
+        this.productId = productId;
+        this.price = price;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        validateQuantity();
+        validatePrice();
+    }
+
+    private void validateQuantity() {
+        if (quantity < 0) {
+            throw new OrderDomainException("Quantity must be non-negative but was: " + quantity);
+        }
+    }
+
+    private void validatePrice() {
+        if (price.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new OrderDomainException("Price must be greater than zero but was: " + price);
+        }
+        if (!price.multiply(BigDecimal.valueOf(quantity)).equals(totalPrice)) {
+            throw new OrderDomainException("Total price should be equal to price multiplied by quantity. Expected: " +
+                    price.multiply(BigDecimal.valueOf(quantity)) + " but was: " + totalPrice);
+        }
+    }
+
+    void initializeBasketItem(Order order, Integer itemNumber) {
+        this.order = order;
+        this.id = itemNumber;
+    }
+
     public Integer getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public UUID getProductId() {
         return productId;
     }
 
-    public void setProductId(UUID productId) {
-        this.productId = productId;
-    }
-
     public BigDecimal getPrice() {
         return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
     }
 
     public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
-
     public BigDecimal getTotalPrice() {
         return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
     }
 }

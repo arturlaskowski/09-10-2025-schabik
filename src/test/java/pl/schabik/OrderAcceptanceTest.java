@@ -1,6 +1,7 @@
 
 package pl.schabik;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,17 +77,12 @@ class OrderAcceptanceTest {
     }
 
     private CreateOrderDto createOrderDto() {
-        var customer = new Customer();
-        customer.setId(UUID.randomUUID());
-        customer.setFirstName("Waldek");
-        customer.setLastName("Kiepski");
-        customer.setEmail("waldek@gmail.com");
-        var customerId = customerRepository.save(customer).getId();
+        var customerId = customerRepository.save(new Customer("Waldek", "Kiepski", "waldek@gmail.com")).getId();
 
         var items = List.of(new OrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
                 new OrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
         var address = new OrderAddressDto("Małysza", "94-000", "Adasiowo", "12");
-        return new CreateOrderDto(customerId, new BigDecimal("44.56"), items, address);
+        return new CreateOrderDto(customerId, new BigDecimal("54.56"), items, address);
     }
 
     private String getBaseUrl() {

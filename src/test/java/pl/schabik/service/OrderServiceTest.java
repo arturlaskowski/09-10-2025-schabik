@@ -41,12 +41,7 @@ class OrderServiceTest {
     @Test
     void shouldCreateOrder() {
         // given
-        var customer = new Customer();
-        customer.setId(UUID.randomUUID());
-        customer.setFirstName("Ferdek");
-        customer.setLastName("Kiepski");
-        customer.setEmail("ferdzio@gmail.com");
-        var customerId = customerRepository.save(customer).getId();
+        var customerId = customerRepository.save(new Customer("Arnold", "Boczek", "boczek@gmail.com")).getId();
         var createOrderDto = getCreateOrderDto(customerId);
 
         // when
@@ -89,12 +84,7 @@ class OrderServiceTest {
     @Test
     void shouldPaidOrder() {
         // given
-        var customer = new Customer();
-        customer.setId(UUID.randomUUID());
-        customer.setFirstName("Arnold");
-        customer.setLastName("Boczek");
-        customer.setEmail("boczek@gmail.com");
-        var customerId = customerRepository.save(customer).getId();
+        var customerId = customerRepository.save(new Customer("Arnold", "Boczek", "boczek@gmail.com")).getId();
         var createOrderDto = getCreateOrderDto(customerId);
         var orderId = orderService.createOrder(createOrderDto);
 
@@ -120,12 +110,7 @@ class OrderServiceTest {
     @Test
     void shouldGetOrder() {
         // given
-        var customer = new Customer();
-        customer.setId(UUID.randomUUID());
-        customer.setFirstName("Wadek");
-        customer.setLastName("Kiepski");
-        customer.setEmail("waldeczek@gmail.com");
-        var customerId = customerRepository.save(customer).getId();
+        var customerId = customerRepository.save(new Customer("Arnold", "Boczek", "boczek@gmail.com")).getId();
         var createOrderDto = getCreateOrderDto(customerId);
         var orderId = orderService.createOrder(createOrderDto);
 

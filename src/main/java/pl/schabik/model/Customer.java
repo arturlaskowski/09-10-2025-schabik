@@ -27,35 +27,30 @@ public class Customer {
     @Column(unique = true)
     private String email;
 
-    public UUID getId() {
-        return id;
+    public Customer(String firstName, String lastName, String email) {
+        this.id = UUID.randomUUID();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    //For JPA
+    protected Customer() {
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 }

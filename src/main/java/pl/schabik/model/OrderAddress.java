@@ -26,43 +26,35 @@ public class OrderAddress {
     @NotBlank
     private String houseNo;
 
-    public UUID getId() {
-        return id;
+    //For JPA
+    protected OrderAddress() {
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public OrderAddress(String street, String postalCode, String city, String houseNo) {
+        this.id = UUID.randomUUID();
+        this.street = street;
+        this.postalCode = postalCode;
+        this.city = city;
+        this.houseNo = houseNo;
+    }
+
+    public UUID getId() {
+        return id;
     }
 
     public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
     public String getPostalCode() {
         return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
     }
 
     public String getCity() {
         return city;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public String getHouseNo() {
         return houseNo;
-    }
-
-    public void setHouseNo(String houseNo) {
-        this.houseNo = houseNo;
     }
 }

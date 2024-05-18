@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import pl.schabik.model.OrderDomainException;
 
 import java.util.stream.Collectors;
 
@@ -24,16 +25,16 @@ public class RestApiExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(value = OrderDomainException.class)
+    public ResponseEntity<ErrorResponse> handleException(OrderDomainException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = CustomerAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleException(CustomerAlreadyExistsException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(value = OrderInIncorrectStateException.class)
-    public ResponseEntity<ErrorResponse> handleException(OrderInIncorrectStateException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

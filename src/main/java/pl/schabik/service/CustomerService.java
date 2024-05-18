@@ -27,11 +27,7 @@ public class CustomerService {
         if (customerRepository.existsByEmail(customerDto.email())) {
             throw new CustomerAlreadyExistsException(customerDto.email());
         }
-        var customer = new Customer();
-        customer.setId(UUID.randomUUID());
-        customer.setFirstName(customerDto.firstName());
-        customer.setLastName(customerDto.lastName());
-        customer.setEmail(customerDto.email());
+        var customer = new Customer(customerDto.firstName(), customerDto.lastName(), customerDto.email());
         return customerRepository.save(customer).getId();
     }
 }
