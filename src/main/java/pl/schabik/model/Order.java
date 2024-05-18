@@ -50,6 +50,9 @@ public class Order {
     @Fetch(FetchMode.JOIN)
     private List<OrderItem> items;
 
+    @Version
+    private int version;
+
     //For JPA
     protected Order() {
     }
