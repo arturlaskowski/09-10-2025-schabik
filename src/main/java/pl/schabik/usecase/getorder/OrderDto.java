@@ -1,4 +1,4 @@
-package pl.schabik.application.dto;
+package pl.schabik.usecase.getorder;
 
 import pl.schabik.domain.OrderStatus;
 
@@ -14,3 +14,4 @@ public record OrderDto(
         List<OrderItemDto> items,
         OrderAddressDto address) {
 }
+

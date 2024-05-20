@@ -32,21 +32,32 @@ class ArchitectureTest {
     }
 
     @Test
-    void domainShouldNotDependOnApplication() {
+    void domainShouldNotDependOnUseCase() {
         noClasses()
                 .that()
                 .resideInAPackage("..domain..")
                 .should()
                 .dependOnClassesThat()
-                .resideInAPackage("..application..")
+                .resideInAPackage("..usecase..")
                 .check(new ClassFileImporter().importPackages(BASE_PACKAGE));
     }
 
     @Test
-    void applicationShouldNotDependOnInfrastructure() {
+    void useCaseShouldNotDependOnSpring() {
         noClasses()
                 .that()
-                .resideInAPackage("..application..")
+                .resideInAPackage("..usecase..")
+                .should()
+                .dependOnClassesThat()
+                .resideInAPackage("org.springframework..")
+                .check(new ClassFileImporter().importPackages(BASE_PACKAGE));
+    }
+
+    @Test
+    void useCaseShouldNotDependOnInfrastructure() {
+        noClasses()
+                .that()
+                .resideInAPackage("..usecase..")
                 .should()
                 .dependOnClassesThat()
                 .resideInAPackage("..infrastructure..")

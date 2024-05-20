@@ -1,4 +1,4 @@
-package pl.schabik.application.dto;
+package pl.schabik.usecase.getorder;
 
 import java.math.BigDecimal;
 import java.util.UUID;

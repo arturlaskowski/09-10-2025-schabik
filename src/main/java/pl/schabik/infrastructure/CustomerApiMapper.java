@@ -1,7 +1,8 @@
 package pl.schabik.infrastructure;
 
-import pl.schabik.application.dto.CreateCustomerDto;
-import pl.schabik.application.dto.CustomerDto;
+
+import pl.schabik.usecase.createcustomer.CreateCustomerDto;
+import pl.schabik.usecase.getcustomer.CustomerDto;
 
 public class CustomerApiMapper {
 

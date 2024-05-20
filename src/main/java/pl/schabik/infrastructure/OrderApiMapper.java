@@ -1,8 +1,9 @@
 package pl.schabik.infrastructure;
 
-import pl.schabik.application.dto.CreateOrderAddressDto;
-import pl.schabik.application.dto.CreateOrderDto;
-import pl.schabik.application.dto.CreateOrderItemDto;
+
+import pl.schabik.usecase.createorder.CreateOrderAddressDto;
+import pl.schabik.usecase.createorder.CreateOrderDto;
+import pl.schabik.usecase.createorder.CreateOrderItemDto;
 
 public class OrderApiMapper {
 

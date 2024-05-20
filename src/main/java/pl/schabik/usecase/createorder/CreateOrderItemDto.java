@@ -1,4 +1,4 @@
-package pl.schabik.application.dto;
+package pl.schabik.usecase.createorder;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

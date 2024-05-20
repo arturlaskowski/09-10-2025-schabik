@@ -1,4 +1,4 @@
-package pl.schabik.application;
+package pl.schabik.usecase;
 
 import pl.schabik.domain.Order;
 import pl.schabik.domain.OrderId;

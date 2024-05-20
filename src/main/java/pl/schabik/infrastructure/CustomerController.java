@@ -3,7 +3,8 @@ package pl.schabik.infrastructure;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.schabik.application.CustomerService;
+import pl.schabik.usecase.createcustomer.CreateCustomerService;
+import pl.schabik.usecase.getcustomer.GetCustomerService;
 
 import java.util.UUID;
 
@@ -11,15 +12,17 @@ import java.util.UUID;
 @RequestMapping("/customers")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final CreateCustomerService createCustomerService;
+    private final GetCustomerService getCustomerService;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
+    public CustomerController(CreateCustomerService createCustomerService, GetCustomerService getCustomerService) {
+        this.createCustomerService = createCustomerService;
+        this.getCustomerService = getCustomerService;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponse> getCustomer(@PathVariable UUID id) {
-        var customer = customerService.getCustomer(id);
+        var customer = getCustomerService.getCustomer(id);
         var customerResponse = CustomerApiMapper.mapToCustomerResponse(customer);
         return ResponseEntity.ok(customerResponse);
     }
@@ -27,7 +30,7 @@ public class CustomerController {
     @PostMapping
     public UUID addCustomer(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) {
         var createCustomerDto = CustomerApiMapper.mapToCreateCustomerDto(createCustomerRequest);
-        return customerService.addCustomer(createCustomerDto);
+        return createCustomerService.addCustomer(createCustomerDto);
     }
 }
 

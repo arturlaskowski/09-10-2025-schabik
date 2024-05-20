@@ -1,56 +1,44 @@
+package pl.schabik.usecase;
 
-package pl.schabik;
-
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import pl.schabik.domain.*;
 import pl.schabik.usecase.createorder.CreateOrderAddressDto;
 import pl.schabik.usecase.createorder.CreateOrderDto;
 import pl.schabik.usecase.createorder.CreateOrderItemDto;
+import pl.schabik.usecase.createorder.CreateOrderService;
+import pl.schabik.usecase.getcustomer.CustomerNotFoundException;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class OrderAcceptanceTest {
+class CreateOrderServiceTest {
 
-    @LocalServerPort
-    private int port;
+    InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
+    InMemoryCustomerRepository customerRepository = new InMemoryCustomerRepository();
+    CreateOrderService createOrderService = new CreateOrderService(orderRepository, customerRepository);
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private CustomerRepository customerRepository;
-
-    @Autowired
-    private OrderRepository orderRepository;
+    @AfterEach
+    void cleanUp() {
+        orderRepository.deleteAll();
+        customerRepository.deleteAll();
+    }
 
     @Test
-    @DisplayName("""
-            given request to add order for existing customer,
-            when request is sent,
-            then save order and HTTP 200 status received""")
-    void givenRequestToAddOrderForExistingCustomer_whenRequestIsSent_thenOrderSavedAndHttp200() {
+    void shouldCreateOrder() {
         // given
-        var createOrderDto = createOrderDto();
+        var customerId = customerRepository.save(new Customer("Arnold", "Boczek", "boczek@gmail.com")).getId();
+        var createOrderDto = getCreateOrderDto(customerId);
 
         // when
-        ResponseEntity<UUID> response = restTemplate.postForEntity(getBaseUrl(), createOrderDto, UUID.class);
+        var orderId = createOrderService.createOrder(createOrderDto);
 
         // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        var savedOrder = orderRepository.findById(new OrderId(response.getBody())).orElseThrow();
+        var savedOrder = orderRepository.findById(orderId).orElseThrow();
         assertThat(savedOrder)
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
@@ -71,16 +59,22 @@ class OrderAcceptanceTest {
                 });
     }
 
-    private CreateOrderDto createOrderDto() {
-        var customerId = customerRepository.save(new Customer("Waldek", "Kiepski", "waldek@gmail.com")).getId();
+    @Test
+    void shouldThrowExceptionWhenCustomerDoesNotExistWhileCreatingOrder() {
+        // given
+        var nonExistentCustomerId = UUID.randomUUID();
+        var createOrderDto = getCreateOrderDto(nonExistentCustomerId);
 
+        // expected
+        assertThatThrownBy(() -> createOrderService.createOrder(createOrderDto))
+                .isInstanceOf(CustomerNotFoundException.class)
+                .hasMessage(CustomerNotFoundException.createExceptionMessage(nonExistentCustomerId));
+    }
+
+    private CreateOrderDto getCreateOrderDto(UUID customerId) {
         var items = List.of(new CreateOrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
                 new CreateOrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
         var address = new CreateOrderAddressDto("Małysza", "94-000", "Adasiowo", "12");
         return new CreateOrderDto(customerId, new BigDecimal("54.56"), items, address);
-    }
-
-    private String getBaseUrl() {
-        return "http://localhost:" + port + "/orders";
     }
 }

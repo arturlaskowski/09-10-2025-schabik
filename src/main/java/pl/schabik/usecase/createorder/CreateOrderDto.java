@@ -1,4 +1,4 @@
-package pl.schabik.application.dto;
+package pl.schabik.usecase.createorder;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -16,3 +16,4 @@ public record CreateOrderDto(
         @Valid CreateOrderAddressDto address
 ) {
 }
+

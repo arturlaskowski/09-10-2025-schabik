@@ -1,4 +1,4 @@
-package pl.schabik.application.dto;
+package pl.schabik.usecase.getcustomer;
 
 import java.util.UUID;
 

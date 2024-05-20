@@ -8,10 +8,11 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.schabik.application.dto.CreateCustomerDto;
-import pl.schabik.application.dto.CustomerDto;
 import pl.schabik.infrastructure.ErrorResponse;
-import pl.schabik.application.CustomerService;
+import pl.schabik.usecase.createcustomer.CreateCustomerDto;
+import pl.schabik.usecase.createcustomer.CreateCustomerService;
+import pl.schabik.usecase.getcustomer.CustomerDto;
+import pl.schabik.usecase.getcustomer.GetCustomerService;
 
 import java.util.UUID;
 
@@ -27,7 +28,10 @@ class CustomerAcceptanceTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private CustomerService customerService;
+    private CreateCustomerService createCustomerService;
+
+    @Autowired
+    private GetCustomerService getCustomerService;
 
     @Test
     @DisplayName("""
@@ -37,7 +41,7 @@ class CustomerAcceptanceTest {
     void givenExistingCustomerId_whenRequestIsSent_thenCustomerDetailsReturnedAndHttp200() {
         //given
         var createCustomerDto = new CreateCustomerDto("Ferdzio", "Kiepski", "ferdek@gemail.com");
-        var customerId = customerService.addCustomer(createCustomerDto);
+        var customerId = createCustomerService.addCustomer(createCustomerDto);
 
         //when
         ResponseEntity<CustomerDto> response = restTemplate.getForEntity(
@@ -92,7 +96,7 @@ class CustomerAcceptanceTest {
         assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(postResponse.getBody()).isNotNull();
 
-        assertThat(customerService.getCustomer(postResponse.getBody()))
+        assertThat(getCustomerService.getCustomer(postResponse.getBody()))
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("firstName", createCustomerDto.firstName())
                 .hasFieldOrPropertyWithValue("lastName", createCustomerDto.lastName())
@@ -107,7 +111,7 @@ class CustomerAcceptanceTest {
     void givenRequestForCreatingCustomerWithExistingEmail_whenRequestIsSent_thenCustomerNotAddedAndHttp409() {
         //given
         String email = "waldek12@gmail.com";
-        customerService.addCustomer(new CreateCustomerDto("Waldemar", "Kiepski", email));
+        createCustomerService.addCustomer(new CreateCustomerDto("Waldemar", "Kiepski", email));
 
         var createCustomerDto = new CreateCustomerDto("Walduś", "Boczek", email);
 

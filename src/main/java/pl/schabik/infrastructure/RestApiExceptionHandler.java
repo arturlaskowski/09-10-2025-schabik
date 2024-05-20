@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.schabik.domain.OrderDomainException;
-import pl.schabik.application.exception.CustomerAlreadyExistsException;
-import pl.schabik.application.exception.CustomerNotFoundException;
-import pl.schabik.application.exception.OrderNotFoundException;
+import pl.schabik.usecase.createcustomer.CustomerAlreadyExistsException;
+import pl.schabik.usecase.getcustomer.CustomerNotFoundException;
+import pl.schabik.usecase.common.OrderNotFoundException;
 
 import java.util.stream.Collectors;
 

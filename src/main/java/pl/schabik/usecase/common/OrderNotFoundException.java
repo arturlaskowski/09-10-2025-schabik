@@ -1,4 +1,4 @@
-package pl.schabik.application.exception;
+package pl.schabik.usecase.common;
 
 import pl.schabik.domain.OrderId;
 
