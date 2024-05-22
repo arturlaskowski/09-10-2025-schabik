@@ -9,8 +9,15 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.schabik.application.dto.*;
-import pl.schabik.domain.*;
+import pl.schabik.customer.CreateCustomerDto;
+import pl.schabik.customer.CustomerService;
+import pl.schabik.order.application.OrderService;
+import pl.schabik.order.application.dto.CreateOrderAddressDto;
+import pl.schabik.order.application.dto.CreateOrderDto;
+import pl.schabik.order.application.dto.CreateOrderItemDto;
+import pl.schabik.order.application.dto.OrderDto;
+import pl.schabik.order.domain.OrderId;
+import pl.schabik.order.domain.OrderStatus;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,10 +35,10 @@ class OrderAcceptanceTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerService customerService;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private OrderService orderService;
 
     @Test
     @DisplayName("""
@@ -48,29 +55,31 @@ class OrderAcceptanceTest {
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        var savedOrder = orderRepository.findById(new OrderId(response.getBody())).orElseThrow();
+        var savedOrder = orderService.getOrderById(new OrderId(response.getBody()));
         assertThat(savedOrder)
                 .hasNoNullFieldsOrProperties()
-                .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
-                .hasFieldOrPropertyWithValue("price", new Money(createOrderDto.price()))
+                .hasFieldOrPropertyWithValue("customerId", createOrderDto.customerId())
+                .hasFieldOrPropertyWithValue("price", createOrderDto.price())
                 .hasFieldOrPropertyWithValue("status", OrderStatus.PENDING)
-                .extracting(Order::getAddress)
+                .extracting(OrderDto::address)
                 .hasFieldOrPropertyWithValue("street", createOrderDto.address().street())
                 .hasFieldOrPropertyWithValue("postalCode", createOrderDto.address().postalCode())
                 .hasFieldOrPropertyWithValue("city", createOrderDto.address().city())
                 .hasFieldOrPropertyWithValue("houseNo", createOrderDto.address().houseNo());
 
-        assertThat(savedOrder.getItems()).hasSize(createOrderDto.items().size())
+        assertThat(savedOrder.items()).hasSize(createOrderDto.items().size())
                 .zipSatisfy(createOrderDto.items(), (orderItem, orderItemDto) -> {
-                    assertThat(orderItem.getProductId()).isEqualTo(orderItemDto.productId());
-                    assertThat(orderItem.getPrice()).isEqualTo(new Money(orderItemDto.price()));
-                    assertThat(orderItem.getQuantity()).isEqualTo(new Quantity(orderItemDto.quantity()));
-                    assertThat(orderItem.getTotalPrice()).isEqualTo(new Money(orderItemDto.totalPrice()));
+                    assertThat(orderItem.productId()).isEqualTo(orderItemDto.productId());
+                    assertThat(orderItem.price()).isEqualTo(orderItemDto.price());
+                    assertThat(orderItem.quantity()).isEqualTo(orderItemDto.quantity());
+                    assertThat(orderItem.totalPrice()).isEqualTo(orderItemDto.totalPrice());
                 });
     }
 
     private CreateOrderDto createOrderDto() {
-        var customerId = customerRepository.save(new Customer("Waldek", "Kiepski", "waldek@gmail.com")).getId();
+        var createCustomerDto = new CreateCustomerDto(
+                "Waldek", "Kiepski", "waldek@gmail.com");
+        var customerId = customerService.addCustomer(createCustomerDto);
 
         var items = List.of(new CreateOrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
                 new CreateOrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
