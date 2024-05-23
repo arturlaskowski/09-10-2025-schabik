@@ -1,4 +1,4 @@
-package pl.schabik;
+package pl.schabik.customer;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,9 +9,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.schabik.common.ErrorResponse;
-import pl.schabik.customer.CreateCustomerDto;
-import pl.schabik.customer.CustomerDto;
-import pl.schabik.customer.CustomerService;
 
 import java.util.UUID;
 

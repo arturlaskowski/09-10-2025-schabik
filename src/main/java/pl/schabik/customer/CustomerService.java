@@ -1,16 +1,20 @@
 package pl.schabik.customer;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import pl.schabik.common.CustomerCreatedEvent;
 
 import java.util.UUID;
 
 @Service
-public class CustomerService implements CustomerFacade {
+public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, ApplicationEventPublisher applicationEventPublisher) {
         this.customerRepository = customerRepository;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public CustomerDto getCustomer(UUID id) {
@@ -24,12 +28,8 @@ public class CustomerService implements CustomerFacade {
             throw new CustomerAlreadyExistsException(customerDto.email());
         }
         var customer = new Customer(customerDto.firstName(), customerDto.lastName(), customerDto.email());
-        return customerRepository.save(customer).getId();
-    }
-
-
-    @Override
-    public boolean existsById(UUID customerId) {
-        return customerRepository.existsById(customerId);
+        var customerId = customerRepository.save(customer).getId();
+        applicationEventPublisher.publishEvent(new CustomerCreatedEvent(customerId));
+        return customerId;
     }
 }

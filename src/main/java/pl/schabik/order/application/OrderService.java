@@ -2,11 +2,11 @@ package pl.schabik.order.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.schabik.customer.CustomerFacade;
 import pl.schabik.order.application.dto.CreateOrderDto;
 import pl.schabik.order.application.dto.OrderDto;
 import pl.schabik.order.application.exception.CustomerNotFoundException;
 import pl.schabik.order.application.exception.OrderNotFoundException;
+import pl.schabik.order.application.replication.CustomerProjectionService;
 import pl.schabik.order.domain.Money;
 import pl.schabik.order.domain.Order;
 import pl.schabik.order.domain.OrderId;
@@ -18,11 +18,11 @@ import java.util.UUID;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final CustomerFacade customerFacade;
+    private final CustomerProjectionService customerProjectionService;
 
-    public OrderService(OrderRepository orderRepository, CustomerFacade customerFacade) {
+    public OrderService(OrderRepository orderRepository, CustomerProjectionService customerProjectionService) {
         this.orderRepository = orderRepository;
-        this.customerFacade = customerFacade;
+        this.customerProjectionService = customerProjectionService;
     }
 
     public OrderId createOrder(CreateOrderDto createOrderDto) {
@@ -51,7 +51,7 @@ public class OrderService {
     }
 
     private void validateCustomerExists(UUID customerId) {
-        if (!customerFacade.existsById(customerId)) {
+        if (!customerProjectionService.existsById(customerId)) {
             throw new CustomerNotFoundException(customerId);
         }
     }

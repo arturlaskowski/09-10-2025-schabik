@@ -1,10 +1,7 @@
 package pl.schabik.architecture;
 
-import com.tngtech.archunit.base.DescribedPredicate;
-import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import org.junit.jupiter.api.Test;
-import pl.schabik.customer.CustomerFacade;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 
@@ -68,23 +65,14 @@ class ArchitectureTest {
     }
 
     @Test
-    void orderModuleShouldNotDependOnCustomerModuleExcludeFacade() {
+    void orderModuleShouldNotDependOnCustomerModule() {
         noClasses()
                 .that()
                 .resideInAPackage("..pl.schabik.order..")
                 .should()
-                .dependOnClassesThat(originatesFromLoyaltyModuleAndIsNotFacade())
+                .dependOnClassesThat()
+                .resideInAPackage("..pl.schabik.customer..")
                 .check(new ClassFileImporter().importPackages(BASE_PACKAGE));
-    }
-
-    private static DescribedPredicate<JavaClass> originatesFromLoyaltyModuleAndIsNotFacade() {
-        return new DescribedPredicate<>("originates from customer module and is not a facade") {
-            @Override
-            public boolean test(JavaClass input) {
-                return input.getPackageName().startsWith("pl.schabik.customer")
-                        && !input.isAssignableFrom(CustomerFacade.class);
-            }
-        };
     }
 }
 

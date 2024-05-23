@@ -1,5 +1,5 @@
 
-package pl.schabik;
+package pl.schabik.order;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,13 +9,13 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pl.schabik.customer.CreateCustomerDto;
-import pl.schabik.customer.CustomerService;
+import pl.schabik.common.CustomerCreatedEvent;
 import pl.schabik.order.application.OrderService;
 import pl.schabik.order.application.dto.CreateOrderAddressDto;
 import pl.schabik.order.application.dto.CreateOrderDto;
 import pl.schabik.order.application.dto.CreateOrderItemDto;
 import pl.schabik.order.application.dto.OrderDto;
+import pl.schabik.order.application.replication.CustomerProjectionService;
 import pl.schabik.order.domain.OrderId;
 import pl.schabik.order.domain.OrderStatus;
 
@@ -35,7 +35,7 @@ class OrderAcceptanceTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private CustomerService customerService;
+    private CustomerProjectionService customerService;
 
     @Autowired
     private OrderService orderService;
@@ -77,9 +77,8 @@ class OrderAcceptanceTest {
     }
 
     private CreateOrderDto createOrderDto() {
-        var createCustomerDto = new CreateCustomerDto(
-                "Waldek", "Kiepski", "waldek@gmail.com");
-        var customerId = customerService.addCustomer(createCustomerDto);
+        var customerId = UUID.randomUUID();
+        customerService.replicateCustomer(new CustomerCreatedEvent(customerId));
 
         var items = List.of(new CreateOrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
                 new CreateOrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));

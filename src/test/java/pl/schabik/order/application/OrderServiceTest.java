@@ -2,12 +2,14 @@ package pl.schabik.order.application;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import pl.schabik.common.CustomerCreatedEvent;
 import pl.schabik.order.application.dto.CreateOrderAddressDto;
 import pl.schabik.order.application.dto.CreateOrderDto;
 import pl.schabik.order.application.dto.CreateOrderItemDto;
 import pl.schabik.order.application.dto.OrderDto;
 import pl.schabik.order.application.exception.CustomerNotFoundException;
 import pl.schabik.order.application.exception.OrderNotFoundException;
+import pl.schabik.order.application.replication.CustomerProjectionService;
 import pl.schabik.order.domain.*;
 
 import java.math.BigDecimal;
@@ -20,18 +22,22 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 class OrderServiceTest {
 
     InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
-    CustomerFacadeStub customerFacade = new CustomerFacadeStub(true);
-    OrderService orderService = new OrderService(orderRepository, customerFacade);
+    InMemoryCustomerProjectionRepository customerRepository = new InMemoryCustomerProjectionRepository();
+    CustomerProjectionService customerService = new CustomerProjectionService(customerRepository);
+    OrderService orderService = new OrderService(orderRepository, customerService);
 
     @AfterEach
     void cleanUp() {
         orderRepository.deleteAll();
+        customerRepository.deleteAll();
     }
 
     @Test
     void shouldCreateOrder() {
         // given
-        var createOrderDto = getCreateOrderDto();
+        var customerId = UUID.randomUUID();
+        customerService.replicateCustomer(new CustomerCreatedEvent(customerId));
+        var createOrderDto = getCreateOrderDto(customerId);
 
         // when
         var orderId = orderService.createOrder(createOrderDto);
@@ -61,8 +67,6 @@ class OrderServiceTest {
     @Test
     void shouldThrowExceptionWhenCustomerDoesNotExistWhileCreatingOrder() {
         // given
-        var customerFacade = new CustomerFacadeStub(false);
-        var orderService = new OrderService(orderRepository, customerFacade);
         var nonExistentCustomerId = UUID.randomUUID();
         var createOrderDto = getCreateOrderDto(nonExistentCustomerId);
 
@@ -75,7 +79,9 @@ class OrderServiceTest {
     @Test
     void shouldPaidOrder() {
         // given
-        var createOrderDto = getCreateOrderDto();
+        var customerId = UUID.randomUUID();
+        customerService.replicateCustomer(new CustomerCreatedEvent(customerId));
+        var createOrderDto = getCreateOrderDto(customerId);
         var orderId = orderService.createOrder(createOrderDto);
 
         // when
@@ -100,7 +106,9 @@ class OrderServiceTest {
     @Test
     void shouldGetOrder() {
         // given
-        var createOrderDto = getCreateOrderDto();
+        var customerId = UUID.randomUUID();
+        customerService.replicateCustomer(new CustomerCreatedEvent(customerId));
+        var createOrderDto = getCreateOrderDto(customerId);
         var orderId = orderService.createOrder(createOrderDto);
 
         // when
@@ -136,10 +144,6 @@ class OrderServiceTest {
         assertThatThrownBy(() -> orderService.getOrderById(nonExistentOrderId))
                 .isInstanceOf(OrderNotFoundException.class)
                 .hasMessage(OrderNotFoundException.createExceptionMessage(nonExistentOrderId));
-    }
-
-    private CreateOrderDto getCreateOrderDto() {
-        return getCreateOrderDto(UUID.randomUUID());
     }
 
     private CreateOrderDto getCreateOrderDto(UUID customerId) {
