@@ -1,4 +1,4 @@
-package pl.schabik.order.infrastructure;
+package pl.schabik.order.infrastructure.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -32,5 +32,3 @@ public record CreateOrderRequest(
             @NotBlank String houseNo) {
     }
 }
-
-

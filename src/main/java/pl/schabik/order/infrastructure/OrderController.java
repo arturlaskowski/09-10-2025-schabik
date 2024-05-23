@@ -2,11 +2,11 @@ package pl.schabik.order.infrastructure;
 
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.schabik.order.application.OrderService;
+import pl.schabik.order.domain.OrderId;
+import pl.schabik.order.infrastructure.dto.CreateOrderRequest;
+import pl.schabik.order.infrastructure.dto.GetOrderResponse;
 
 import java.util.UUID;
 
@@ -24,5 +24,11 @@ public class OrderController {
     public UUID createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
         var createOrderDto = OrderApiMapper.mapToDto(createOrderRequest);
         return orderService.createOrder(createOrderDto).id();
+    }
+
+    @GetMapping("/{id}")
+    public GetOrderResponse getOrder(@PathVariable UUID id) {
+        var orderDto = orderService.getOrderById(new OrderId(id));
+        return OrderApiMapper.mapToGetOrderResponse(orderDto);
     }
 }

@@ -1,17 +1,17 @@
 package pl.schabik.order.infrastructure;
 
-import pl.schabik.order.application.dto.CreateOrderAddressDto;
-import pl.schabik.order.application.dto.CreateOrderDto;
-import pl.schabik.order.application.dto.CreateOrderItemDto;
-
-import java.util.stream.Collectors;
+import pl.schabik.order.application.dto.*;
+import pl.schabik.order.infrastructure.dto.CreateOrderRequest;
+import pl.schabik.order.infrastructure.dto.GetOrderAddressResponse;
+import pl.schabik.order.infrastructure.dto.GetOrderItemResponse;
+import pl.schabik.order.infrastructure.dto.GetOrderResponse;
 
 public class OrderApiMapper {
 
     public static CreateOrderDto mapToDto(CreateOrderRequest request) {
         var itemDtos = request.items().stream()
                 .map(OrderApiMapper::mapItemToCreateDto)
-                .collect(Collectors.toList());
+                .toList();
 
         var addressDto = mapAddressToDto(request.address());
 
@@ -38,6 +38,41 @@ public class OrderApiMapper {
                 address.postalCode(),
                 address.city(),
                 address.houseNo()
+        );
+    }
+
+    public static GetOrderResponse mapToGetOrderResponse(OrderDto dto) {
+        var itemsResponse = dto.items().stream()
+                .map(OrderApiMapper::mapToItemResponse)
+                .toList();
+
+        var addressDto = mapToAddressResponse(dto.address());
+
+        return new GetOrderResponse(
+                dto.id(),
+                dto.customerId(),
+                dto.price(),
+                dto.status().name(),
+                itemsResponse,
+                addressDto
+        );
+    }
+
+    private static GetOrderItemResponse mapToItemResponse(OrderItemDto dto) {
+        return new GetOrderItemResponse(
+                dto.productId(),
+                dto.quantity(),
+                dto.price(),
+                dto.totalPrice()
+        );
+    }
+
+    private static GetOrderAddressResponse mapToAddressResponse(OrderAddressDto dto) {
+        return new GetOrderAddressResponse(
+                dto.street(),
+                dto.postalCode(),
+                dto.city(),
+                dto.houseNo()
         );
     }
 }
