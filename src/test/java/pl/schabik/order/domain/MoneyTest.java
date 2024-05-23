@@ -2,6 +2,7 @@ package pl.schabik.order.domain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import pl.schabik.order.domain.vo.Money;
 
 import java.math.BigDecimal;
 

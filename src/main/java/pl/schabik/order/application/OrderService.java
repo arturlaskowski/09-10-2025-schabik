@@ -7,9 +7,9 @@ import pl.schabik.order.application.dto.OrderDto;
 import pl.schabik.order.application.exception.CustomerNotFoundException;
 import pl.schabik.order.application.exception.OrderNotFoundException;
 import pl.schabik.order.application.replication.CustomerProjectionService;
-import pl.schabik.order.domain.Money;
+import pl.schabik.order.domain.vo.Money;
 import pl.schabik.order.domain.Order;
-import pl.schabik.order.domain.OrderId;
+import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.domain.OrderRepository;
 
 import java.util.UUID;

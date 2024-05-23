@@ -10,7 +10,11 @@ import pl.schabik.order.application.dto.OrderDto;
 import pl.schabik.order.application.exception.CustomerNotFoundException;
 import pl.schabik.order.application.exception.OrderNotFoundException;
 import pl.schabik.order.application.replication.CustomerProjectionService;
+import pl.schabik.order.application.replication.InMemoryCustomerProjectionRepository;
 import pl.schabik.order.domain.*;
+import pl.schabik.order.domain.vo.Money;
+import pl.schabik.order.domain.vo.OrderId;
+import pl.schabik.order.domain.vo.Quantity;
 
 import java.math.BigDecimal;
 import java.util.List;

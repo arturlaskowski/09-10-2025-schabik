@@ -3,7 +3,7 @@ package pl.schabik.customer;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface CustomerRepository {
+interface CustomerRepository {
 
     Customer save(Customer customer);
 

@@ -14,7 +14,7 @@ import pl.schabik.order.domain.OrderDomainException;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
-public class OrderRestApiExceptionHandler {
+class OrderRestApiExceptionHandler {
 
     @ExceptionHandler(value = OrderNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(OrderNotFoundException ex) {

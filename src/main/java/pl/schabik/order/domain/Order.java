@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import pl.schabik.order.domain.vo.Money;
+import pl.schabik.order.domain.vo.OrderId;
 
 import java.time.Instant;
 import java.util.List;

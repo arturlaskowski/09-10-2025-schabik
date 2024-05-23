@@ -1,6 +1,6 @@
 package pl.schabik.customer;
 
-public class CustomerApiMapper {
+class CustomerApiMapper {
 
     public static CustomerResponse mapToCustomerResponse(CustomerDto customerDto) {
         return new CustomerResponse(

@@ -1,14 +1,11 @@
-package pl.schabik.order.application;
+package pl.schabik.order.application.replication;
 
-
-import pl.schabik.order.application.replication.CustomerProjection;
-import pl.schabik.order.application.replication.CustomerProjectionRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-class InMemoryCustomerProjectionRepository implements CustomerProjectionRepository {
+public class InMemoryCustomerProjectionRepository implements CustomerProjectionRepository {
 
     private final Map<UUID, CustomerProjection> store = new HashMap<>();
 
@@ -22,7 +19,7 @@ class InMemoryCustomerProjectionRepository implements CustomerProjectionReposito
         return store.containsKey(id);
     }
 
-    void deleteAll() {
+    public void deleteAll() {
         store.clear();
     }
 }

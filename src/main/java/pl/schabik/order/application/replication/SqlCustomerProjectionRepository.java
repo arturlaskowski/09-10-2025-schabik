@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public class SqlCustomerProjectionRepository implements CustomerProjectionRepository {
+class SqlCustomerProjectionRepository implements CustomerProjectionRepository {
 
     private final CustomerProjectionRepositoryJpa customerProjectionRepositoryJpa;
 

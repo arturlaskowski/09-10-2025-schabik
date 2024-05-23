@@ -16,7 +16,7 @@ import pl.schabik.order.application.dto.CreateOrderDto;
 import pl.schabik.order.application.dto.CreateOrderItemDto;
 import pl.schabik.order.application.dto.OrderDto;
 import pl.schabik.order.application.replication.CustomerProjectionService;
-import pl.schabik.order.domain.OrderId;
+import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.domain.OrderStatus;
 
 import java.math.BigDecimal;

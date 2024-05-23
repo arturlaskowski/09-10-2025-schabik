@@ -1,6 +1,6 @@
 package pl.schabik.order.application.exception;
 
-import pl.schabik.order.domain.OrderId;
+import pl.schabik.order.domain.vo.OrderId;
 
 public class OrderNotFoundException extends RuntimeException {
 

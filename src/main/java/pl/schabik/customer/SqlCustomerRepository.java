@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class SqlCustomerRepository implements CustomerRepository {
+class SqlCustomerRepository implements CustomerRepository {
 
     private final CustomerRepositoryJpa customerRepositoryJpa;
 

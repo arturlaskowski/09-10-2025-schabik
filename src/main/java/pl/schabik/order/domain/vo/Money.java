@@ -1,4 +1,4 @@
-package pl.schabik.order.domain;
+package pl.schabik.order.domain.vo;
 
 import jakarta.persistence.Embeddable;
 

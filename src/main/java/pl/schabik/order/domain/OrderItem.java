@@ -2,6 +2,8 @@ package pl.schabik.order.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import pl.schabik.order.domain.vo.Money;
+import pl.schabik.order.domain.vo.Quantity;
 
 import java.util.UUID;
 

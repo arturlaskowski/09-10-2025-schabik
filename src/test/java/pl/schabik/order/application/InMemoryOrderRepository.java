@@ -1,7 +1,7 @@
 package pl.schabik.order.application;
 
 import pl.schabik.order.domain.Order;
-import pl.schabik.order.domain.OrderId;
+import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.domain.OrderRepository;
 
 import java.util.HashMap;

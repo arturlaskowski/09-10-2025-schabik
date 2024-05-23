@@ -7,7 +7,7 @@ import pl.schabik.common.CustomerCreatedEvent;
 import java.util.UUID;
 
 @Service
-public class CustomerService {
+class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final ApplicationEventPublisher applicationEventPublisher;

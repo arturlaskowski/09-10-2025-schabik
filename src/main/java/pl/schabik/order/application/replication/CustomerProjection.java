@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import java.util.UUID;
 
 @Entity
-public class CustomerProjection {
+class CustomerProjection {
 
     @Id
     private UUID id;

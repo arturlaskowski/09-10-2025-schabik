@@ -1,6 +1,6 @@
 package pl.schabik.customer;
 
-public class CustomerAlreadyExistsException extends RuntimeException {
+class CustomerAlreadyExistsException extends RuntimeException {
 
     public static String createExceptionMessage(String email) {
         return String.format("Customer with email: %s already exists", email);

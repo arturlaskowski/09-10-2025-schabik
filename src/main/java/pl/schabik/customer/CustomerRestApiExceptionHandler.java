@@ -11,7 +11,7 @@ import pl.schabik.common.ErrorResponse;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
-public class CustomerRestApiExceptionHandler {
+class CustomerRestApiExceptionHandler {
 
     @ExceptionHandler(value = CustomerNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(CustomerNotFoundException ex) {

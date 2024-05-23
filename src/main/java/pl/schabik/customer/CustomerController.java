@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/customers")
-public class CustomerController {
+class CustomerController {
 
     private final CustomerService customerService;
 

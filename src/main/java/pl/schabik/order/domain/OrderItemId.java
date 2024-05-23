@@ -3,7 +3,7 @@ package pl.schabik.order.domain;
 import java.io.Serializable;
 
 
-public class OrderItemId implements Serializable {
+class OrderItemId implements Serializable {
 
     private Integer id;
     private Order order;

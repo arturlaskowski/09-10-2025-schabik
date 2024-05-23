@@ -4,14 +4,14 @@ import pl.schabik.order.application.dto.CreateOrderAddressDto;
 import pl.schabik.order.application.dto.CreateOrderItemDto;
 import pl.schabik.order.application.dto.OrderAddressDto;
 import pl.schabik.order.application.dto.OrderItemDto;
-import pl.schabik.order.domain.Money;
+import pl.schabik.order.domain.vo.Money;
 import pl.schabik.order.domain.OrderAddress;
 import pl.schabik.order.domain.OrderItem;
-import pl.schabik.order.domain.Quantity;
+import pl.schabik.order.domain.vo.Quantity;
 
 import java.util.List;
 
-public class OrderMapper {
+class OrderMapper {
 
     public static List<OrderItem> convertToCreateOrderItems(List<CreateOrderItemDto> itemDtos) {
         return itemDtos.stream()

@@ -2,6 +2,8 @@ package pl.schabik.order.domain;
 
 
 import org.junit.jupiter.api.Test;
+import pl.schabik.order.domain.vo.Money;
+import pl.schabik.order.domain.vo.Quantity;
 
 import java.math.BigDecimal;
 import java.time.Instant;

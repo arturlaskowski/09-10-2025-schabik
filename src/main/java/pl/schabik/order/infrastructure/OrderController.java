@@ -4,7 +4,7 @@ package pl.schabik.order.infrastructure;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import pl.schabik.order.application.OrderService;
-import pl.schabik.order.domain.OrderId;
+import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.infrastructure.dto.CreateOrderRequest;
 import pl.schabik.order.infrastructure.dto.GetOrderResponse;
 
@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/orders")
-public class OrderController {
+class OrderController {
 
     private final OrderService orderService;
 
