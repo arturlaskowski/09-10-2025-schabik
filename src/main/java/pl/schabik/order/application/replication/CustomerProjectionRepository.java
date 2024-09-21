@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public interface CustomerProjectionRepository {
 
-    void save(CustomerProjection customerProjection);
+    CustomerProjection save(CustomerProjection customerProjection);
 
     boolean existsById(UUID id);
 }
