@@ -10,8 +10,9 @@ public class InMemoryCustomerProjectionRepository implements CustomerProjectionR
     private final Map<UUID, CustomerProjection> store = new HashMap<>();
 
     @Override
-    public void save(CustomerProjection customer) {
+    public CustomerProjection save(CustomerProjection customer) {
         store.put(customer.getId(), customer);
+        return customer;
     }
 
     @Override
