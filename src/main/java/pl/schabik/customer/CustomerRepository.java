@@ -10,6 +10,4 @@ public interface CustomerRepository {
     Optional<Customer> findById(UUID id);
 
     boolean existsByEmail(String email);
-
-    boolean existsById(UUID id);
 }
