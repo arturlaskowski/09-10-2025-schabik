@@ -1,4 +1,4 @@
-package pl.schabik.order.command.dto;
+package pl.schabik.order.command.create;
 
 import jakarta.validation.constraints.NotBlank;
 

@@ -51,7 +51,8 @@ public class Order {
     protected Order() {
     }
 
-    public Order(UUID customerId, Money price, List<OrderItem> items, OrderAddress address) {
+    public Order(OrderId orderId, UUID customerId, Money price, List<OrderItem> items, OrderAddress address) {
+        this.id = orderId;
         this.customerId = customerId;
         this.price = price;
         this.items = items;
@@ -60,7 +61,6 @@ public class Order {
     }
 
     private void initialize() {
-        this.id = OrderId.newOne();
         this.createAt = Instant.now();
         this.lastUpdateAt = Instant.now();
         this.status = OrderStatus.PENDING;

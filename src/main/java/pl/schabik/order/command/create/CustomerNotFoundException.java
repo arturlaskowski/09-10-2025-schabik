@@ -1,4 +1,4 @@
-package pl.schabik.order.command.exception;
+package pl.schabik.order.command.create;
 
 import java.util.UUID;
 

@@ -1,14 +1,14 @@
 package pl.schabik.order.command;
 
 import pl.schabik.order.domain.Order;
-import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.domain.OrderRepository;
+import pl.schabik.order.domain.vo.OrderId;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-class InMemoryOrderRepository implements OrderRepository {
+public class InMemoryOrderRepository implements OrderRepository {
 
     private final Map<OrderId, Order> store = new HashMap<>();
 
@@ -23,7 +23,7 @@ class InMemoryOrderRepository implements OrderRepository {
         return Optional.ofNullable(store.get(id));
     }
 
-    void deleteAll() {
+    public void deleteAll() {
         store.clear();
     }
 }

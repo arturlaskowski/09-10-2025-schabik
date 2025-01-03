@@ -3,6 +3,7 @@ package pl.schabik.order.domain;
 
 import org.junit.jupiter.api.Test;
 import pl.schabik.order.domain.vo.Money;
+import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.domain.vo.Quantity;
 
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ class OrderTest {
         var beforeCreation = Instant.now();
 
         //when
-        var order = new Order(customerId, new Money(new BigDecimal("66.50")), List.of(item, item2), address);
+        var order = new Order(OrderId.newOne(), customerId, new Money(new BigDecimal("66.50")), List.of(item, item2), address);
         var afterCreation = Instant.now();
 
         // then
@@ -47,6 +48,7 @@ class OrderTest {
     @Test
     void shouldThrowExceptionWhenOrderPriceDoesNotMatchItemTotals() {
         //given
+        var orderId = OrderId.newOne();
         var customerId = UUID.randomUUID();
         var sumOfOrderItemsPrice = new Money(new BigDecimal("20.00"));
         var items = List.of(new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), sumOfOrderItemsPrice));
@@ -55,7 +57,7 @@ class OrderTest {
 
         //when
         var orderDomainException = assertThrows(OrderDomainException.class,
-                () -> new Order(customerId, differentPriceThanSumOrderItems, items, address));
+                () -> new Order(orderId, customerId, differentPriceThanSumOrderItems, items, address));
 
         //then
         assertEquals("Total order price: " + differentPriceThanSumOrderItems +
@@ -116,6 +118,6 @@ class OrderTest {
         var customerId = UUID.randomUUID();
         var item = new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), new Money(new BigDecimal("20.00")));
         var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
-        return new Order(customerId, new Money(new BigDecimal("20.00")), List.of(item), address);
+        return new Order(OrderId.newOne(), customerId, new Money(new BigDecimal("20.00")), List.of(item), address);
     }
 }

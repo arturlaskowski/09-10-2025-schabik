@@ -11,11 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.schabik.common.ErrorResponse;
 import pl.schabik.customer.CreateCustomerRequest;
-import pl.schabik.order.command.dto.CreateOrderAddressDto;
-import pl.schabik.order.command.dto.CreateOrderCommand;
-import pl.schabik.order.command.dto.CreateOrderItemDto;
 import pl.schabik.order.domain.OrderStatus;
 import pl.schabik.order.query.dto.OrderByIdQuery;
+import pl.schabik.order.web.dto.CreateOrderRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -102,11 +100,11 @@ class CreateOrderEndToEndTest {
                 .contains("Could not find customer");
     }
 
-    private CreateOrderCommand createOrderDto(UUID customerId) {
-        var items = List.of(new CreateOrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
-                new CreateOrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
-        var address = new CreateOrderAddressDto("Małysza", "94-000", "Adasiowo", "12");
-        return new CreateOrderCommand(customerId, new BigDecimal("54.56"), items, address);
+    private CreateOrderRequest createOrderDto(UUID customerId) {
+        var items = List.of(new CreateOrderRequest.OrderItemRequest(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
+                new CreateOrderRequest.OrderItemRequest(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
+        var address = new CreateOrderRequest.OrderAddressRequest("Małysza", "94-000", "Adasiowo", "12");
+        return new CreateOrderRequest(customerId, new BigDecimal("54.56"), items, address);
     }
 
     private String getBaseOrdersUrl() {

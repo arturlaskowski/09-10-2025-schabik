@@ -9,9 +9,9 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.schabik.order.command.OrderCommandService;
-import pl.schabik.order.command.dto.ApproveOrderCommand;
-import pl.schabik.order.command.dto.PayOrderCommand;
+import pl.schabik.common.command.CommandHandlerExecutor;
+import pl.schabik.order.command.approve.ApproveOrderCommand;
+import pl.schabik.order.command.pay.PayOrderCommand;
 import pl.schabik.order.domain.OrderStatus;
 import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.query.OrderQueryService;
@@ -26,22 +26,23 @@ import java.util.UUID;
 @RequestMapping("/orders")
 class OrderController {
 
-    private final OrderCommandService orderCommandService;
+    private final CommandHandlerExecutor commandHandlerExecutor;
     private final OrderQueryService orderQueryService;
 
-    public OrderController(OrderCommandService orderCommandService, OrderQueryService orderQueryService) {
-        this.orderCommandService = orderCommandService;
+    OrderController(CommandHandlerExecutor commandHandlerExecutor, OrderQueryService orderQueryService) {
+        this.commandHandlerExecutor = commandHandlerExecutor;
         this.orderQueryService = orderQueryService;
     }
 
     @PostMapping
     public ResponseEntity<Void> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
-        var createOrderDto = OrderApiMapper.mapToDto(createOrderRequest);
-        var orderId = orderCommandService.createOrder(createOrderDto).id();
+        var orderId = OrderId.newOne();
+        var createOrderCommand = OrderApiMapper.mapToOrderCommand(orderId, createOrderRequest);
+        commandHandlerExecutor.execute(createOrderCommand);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(orderId)
+                .buildAndExpand(orderId.id())
                 .toUri();
         return ResponseEntity.created(location).build();
     }
@@ -49,7 +50,7 @@ class OrderController {
     @PostMapping("/{id}/pay")
     public ResponseEntity<Void> payOrder(@PathVariable UUID id) {
         var payOrderCommand = new PayOrderCommand(new OrderId(id));
-        orderCommandService.pay(payOrderCommand);
+        commandHandlerExecutor.execute(payOrderCommand);
 
         return ResponseEntity.noContent().build();
     }
@@ -57,7 +58,7 @@ class OrderController {
     @PostMapping("/{id}/approve")
     public ResponseEntity<Void> approveOrder(@PathVariable UUID id) {
         var approveOrderCommand = new ApproveOrderCommand(new OrderId(id));
-        orderCommandService.approve(approveOrderCommand);
+        commandHandlerExecutor.execute(approveOrderCommand);
 
         return ResponseEntity.noContent().build();
     }

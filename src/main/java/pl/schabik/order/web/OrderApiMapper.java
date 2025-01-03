@@ -1,8 +1,9 @@
 package pl.schabik.order.web;
 
-import pl.schabik.order.command.dto.CreateOrderAddressDto;
-import pl.schabik.order.command.dto.CreateOrderCommand;
-import pl.schabik.order.command.dto.CreateOrderItemDto;
+import pl.schabik.order.command.create.CreateOrderAddressDto;
+import pl.schabik.order.command.create.CreateOrderCommand;
+import pl.schabik.order.command.create.CreateOrderItemDto;
+import pl.schabik.order.domain.vo.OrderId;
 import pl.schabik.order.web.dto.CreateOrderRequest;
 
 class OrderApiMapper {
@@ -10,7 +11,7 @@ class OrderApiMapper {
     private OrderApiMapper() {
     }
 
-    public static CreateOrderCommand mapToDto(CreateOrderRequest request) {
+    public static CreateOrderCommand mapToOrderCommand(OrderId orderId, CreateOrderRequest request) {
         var itemDtos = request.items().stream()
                 .map(OrderApiMapper::mapItemToCreateDto)
                 .toList();
@@ -18,6 +19,7 @@ class OrderApiMapper {
         var addressDto = mapAddressToDto(request.address());
 
         return new CreateOrderCommand(
+                orderId,
                 request.customerId(),
                 request.price(),
                 itemDtos,

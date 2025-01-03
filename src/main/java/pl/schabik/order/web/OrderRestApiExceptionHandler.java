@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import pl.schabik.common.ErrorResponse;
-import pl.schabik.order.command.exception.CustomerNotFoundException;
+import pl.schabik.order.command.create.CustomerNotFoundException;
 import pl.schabik.order.command.exception.OrderNotFoundException;
 import pl.schabik.order.domain.OrderDomainException;
 import pl.schabik.order.query.exception.OrderQueryNotFoundException;
