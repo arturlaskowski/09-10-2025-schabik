@@ -94,12 +94,24 @@ public class Order {
         status = OrderStatus.PAID;
     }
 
+    public void approve() {
+        if (OrderStatus.PAID != status) {
+            throw new OrderDomainException("Order is not in correct state for approval");
+        }
+        lastUpdateAt = Instant.now();
+        status = OrderStatus.APPROVED;
+    }
+
     public boolean isPendingStatus() {
         return OrderStatus.PENDING == status;
     }
 
-    public boolean isPaidStatus() {
+    public boolean isPaid() {
         return OrderStatus.PAID == status;
+    }
+
+    public boolean isApproved() {
+        return OrderStatus.APPROVED == status;
     }
 
     public OrderId getId() {

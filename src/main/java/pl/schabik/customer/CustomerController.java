@@ -3,7 +3,9 @@ package pl.schabik.customer;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -24,9 +26,15 @@ class CustomerController {
     }
 
     @PostMapping
-    public UUID addCustomer(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) {
+    public ResponseEntity<Void> addCustomer(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) {
         var createCustomerDto = CustomerApiMapper.mapToCreateCustomerDto(createCustomerRequest);
-        return customerService.addCustomer(createCustomerDto);
+        var customerId = customerService.addCustomer(createCustomerDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(customerId)
+                .toUri();
+        return ResponseEntity.created(location).build();
     }
 }
 

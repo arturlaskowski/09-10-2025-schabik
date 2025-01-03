@@ -71,7 +71,7 @@ class OrderTest {
         order.pay();
 
         //then
-        assertTrue(order.isPaidStatus());
+        assertTrue(order.isPaid());
     }
 
     @Test
@@ -85,6 +85,31 @@ class OrderTest {
 
         //then
         assertEquals("Order is not in correct state for pay operation", orderDomainException.getMessage());
+    }
+
+    @Test
+    void shouldApprovePaidOrder() {
+        //given
+        var order = createOrder();
+        order.pay();
+
+        //when
+        order.approve();
+
+        //then
+        assertTrue(order.isApproved());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenApprovingNonPaidOrder() {
+        //given
+        var order = createOrder();  // Order is initially pending
+
+        //when
+        var orderDomainException = assertThrows(OrderDomainException.class, order::approve);
+
+        //then
+        assertEquals("Order is not in correct state for approval", orderDomainException.getMessage());
     }
 
     private Order createOrder() {

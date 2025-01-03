@@ -8,6 +8,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 import pl.schabik.common.ErrorResponse;
 
 import java.util.UUID;
@@ -86,10 +87,12 @@ class CustomerAcceptanceTest {
         ResponseEntity<UUID> postResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, UUID.class);
 
         //then
-        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(postResponse.getBody()).isNotNull();
+        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(postResponse.getHeaders().getLocation()).isNotNull();
 
-        assertThat(customerService.getCustomer(postResponse.getBody()))
+        var customerId = UUID.fromString(UriComponentsBuilder.fromUri(postResponse.getHeaders().getLocation())
+                .build().getPathSegments().getLast());
+        assertThat(customerService.getCustomer(customerId))
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("firstName", createCustomerDto.firstName())
                 .hasFieldOrPropertyWithValue("lastName", createCustomerDto.lastName())
