@@ -16,8 +16,10 @@ class ArchitectureTest {
         layeredArchitecture().consideringOnlyDependenciesInLayers()
                 .layer("customer").definedBy("pl.schabik.customer..")
                 .layer("order").definedBy("pl.schabik.order..")
+                .layer("track-order").definedBy("pl.schabik.trackorder..")
                 .whereLayer("customer").mayNotAccessAnyLayer()
                 .whereLayer("order").mayNotAccessAnyLayer()
+                .whereLayer("track-order").mayNotAccessAnyLayer()
                 .check(classes);
     }
 
