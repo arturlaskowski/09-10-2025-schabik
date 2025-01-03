@@ -80,15 +80,13 @@ class OrderTest {
     void shouldAllowPaymentWhenOrderStatusIsPending() {
         //given
         var order = createOrder();
-        var now = Instant.now();
 
         //when
         order.pay();
 
         //then
         assertTrue(order.isPaidStatus());
-        assertThat(order.getLastUpdateAt()).isAfter(now);
-
+        assertThat(order.getLastUpdateAt()).isAfter(order.getCreateAt());
     }
 
     @Test
