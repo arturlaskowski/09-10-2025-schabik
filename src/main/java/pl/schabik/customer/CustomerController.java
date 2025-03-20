@@ -17,16 +17,13 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable UUID id) {
-        var customer = customerService.getCustomer(id);
-        var customerResponse = CustomerApiMapper.mapToCustomerResponse(customer);
-        return ResponseEntity.ok(customerResponse);
+    public ResponseEntity<CustomerDto> getCustomer(@PathVariable UUID id) {
+        return ResponseEntity.ok(customerService.getCustomer(id));
     }
 
     @PostMapping
-    public UUID addCustomer(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) {
-        var createCustomerDto = CustomerApiMapper.mapToCreateCustomerDto(createCustomerRequest);
-        return customerService.addCustomer(createCustomerDto);
+    public UUID addCustomer(@RequestBody @Valid CreateCustomerDto createCustomerRequest) {
+        return customerService.addCustomer(createCustomerRequest);
     }
 }
 
