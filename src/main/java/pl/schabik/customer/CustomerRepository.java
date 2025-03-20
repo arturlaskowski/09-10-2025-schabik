@@ -1,13 +1,10 @@
 package pl.schabik.customer;
 
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.UUID;
 
-interface CustomerRepository {
-
-    Customer save(Customer customer);
-
-    Optional<Customer> findById(UUID id);
+interface CustomerRepository extends JpaRepository<Customer, UUID> {
 
     boolean existsByEmail(String email);
 }

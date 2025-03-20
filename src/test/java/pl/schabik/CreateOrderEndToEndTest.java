@@ -10,7 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.util.UriComponentsBuilder;
 import pl.schabik.common.ErrorResponse;
-import pl.schabik.customer.CreateCustomerRequest;
+import pl.schabik.customer.CreateCustomerDto;
 import pl.schabik.order.domain.OrderStatus;
 import pl.schabik.order.query.dto.OrderByIdQuery;
 import pl.schabik.order.web.dto.CreateOrderRequest;
@@ -37,7 +37,7 @@ class CreateOrderEndToEndTest {
             then save order and HTTP 200 status received""")
     void givenRequestToAddOrderForExistingCustomer_whenRequestIsSent_thenOrderSavedAndHttp200() {
         //given
-        var createCustomerDto = new CreateCustomerRequest("Marianek", "Paździoch", "pazdzeik@gemail.com");
+        var createCustomerDto = new CreateCustomerDto("Marianek", "Paździoch", "pazdzeik@gemail.com");
 
         //when - create customer
         var postCustomerResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, UUID.class);
