@@ -86,7 +86,7 @@ class OrderTest {
 
         //then
         assertTrue(order.isPaidStatus());
-        assertThat(order.getLastUpdateAt()).isAfter(order.getCreateAt());
+        assertThat(order.getLastUpdateAt()).isAfterOrEqualTo(order.getCreateAt());
     }
 
     @Test

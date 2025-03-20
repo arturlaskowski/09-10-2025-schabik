@@ -70,11 +70,11 @@ public class Order {
         this.createAt = Instant.now();
         this.lastUpdateAt = Instant.now();
         this.status = PENDING;
-        validatePrice(price, items);
+        validatePrice();
         initializeBasketItems();
     }
 
-    private void validatePrice(BigDecimal price, List<OrderItem> items) {
+    private void validatePrice() {
         if (price.compareTo(BigDecimal.ZERO) <= 0) {
             throw new OrderDomainException("Order price: " + price + " must be greater than zero");
         }
