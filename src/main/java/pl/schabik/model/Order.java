@@ -66,12 +66,11 @@ public class Order {
         this.createAt = Instant.now();
         this.lastUpdateAt = Instant.now();
         this.status = PENDING;
-        validatePrice(price, items);
+        validatePrice();
         initializeBasketItems();
     }
 
-    private void validatePrice(Money price, List<OrderItem> items) {
-
+    private void validatePrice() {
         Money itemsTotalCost = items.stream()
                 .map(OrderItem::getTotalPrice)
                 .reduce(Money.ZERO, Money::add);
