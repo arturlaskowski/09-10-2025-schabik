@@ -19,16 +19,13 @@ class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable UUID id) {
-        var customer = customerService.getCustomer(id);
-        var customerResponse = CustomerApiMapper.mapToCustomerResponse(customer);
-        return ResponseEntity.ok(customerResponse);
+    public ResponseEntity<CustomerDto> getCustomer(@PathVariable UUID id) {
+        return ResponseEntity.ok(customerService.getCustomer(id));
     }
 
     @PostMapping
-    public ResponseEntity<Void> addCustomer(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) {
-        var createCustomerDto = CustomerApiMapper.mapToCreateCustomerDto(createCustomerRequest);
-        var customerId = customerService.addCustomer(createCustomerDto);
+    public ResponseEntity<Void> addCustomer(@RequestBody @Valid CreateCustomerDto createCustomerRequest) {
+        var customerId = customerService.addCustomer(createCustomerRequest);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
