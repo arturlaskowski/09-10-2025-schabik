@@ -5,8 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.schabik.application.CustomerService;
-import pl.schabik.application.dto.CreateCustomerDto;
-import pl.schabik.application.dto.CustomerDto;
 
 import java.net.URI;
 import java.util.UUID;
@@ -22,13 +20,15 @@ public class CustomerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerDto> getCustomer(@PathVariable UUID id) {
-        var customerDto = customerService.getCustomer(id);
-        return ResponseEntity.ok(customerDto);
+    public ResponseEntity<CustomerResponse> getCustomer(@PathVariable UUID id) {
+        var customer = customerService.getCustomer(id);
+        var customerResponse = CustomerApiMapper.mapToCustomerResponse(customer);
+        return ResponseEntity.ok(customerResponse);
     }
 
     @PostMapping
-    public ResponseEntity<Void> addCustomer(@RequestBody @Valid CreateCustomerDto createCustomerDto) {
+    public ResponseEntity<Void> addCustomer(@RequestBody @Valid CreateCustomerRequest createCustomerRequest) {
+        var createCustomerDto = CustomerApiMapper.mapToCreateCustomerDto(createCustomerRequest);
         var customerId = customerService.addCustomer(createCustomerDto);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -39,4 +39,5 @@ public class CustomerController {
         return ResponseEntity.created(location).build();
     }
 }
+
 
