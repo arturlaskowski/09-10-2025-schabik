@@ -15,7 +15,7 @@ class OrderTest {
     @Test
     void shouldCreateOrderWithValidDetails() {
         //given
-        var customer = new Customer();
+        var customer = new Customer("John", "Doe", "john.doe@example.com");
         var item = new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), new Money(new BigDecimal("20.00")));
         var item2 = new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("15.50")), new Quantity(3), new Money(new BigDecimal("46.50")));
         var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
@@ -44,7 +44,7 @@ class OrderTest {
     @Test
     void shouldThrowExceptionWhenOrderPriceDoesNotMatchItemTotals() {
         //given
-        var customer = new Customer();
+        var customer = new Customer("John", "Doe", "john.doe@example.com");
         var sumOfOrderItemsPrice = new Money(new BigDecimal("20.00"));
         var items = List.of(new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), sumOfOrderItemsPrice));
         var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
@@ -85,7 +85,7 @@ class OrderTest {
     }
 
     private Order createOrder() {
-        var customer = new Customer();
+        var customer = new Customer("John", "Doe", "john.doe@example.com");
         var item = new OrderItem(UUID.randomUUID(), new Money(new BigDecimal("10.00")), new Quantity(2), new Money(new BigDecimal("20.00")));
         var address = new OrderAddress("Boczka", "12345", "Arnoldowo", "1A");
         return new Order(customer, new Money(new BigDecimal("20.00")), List.of(item), address);

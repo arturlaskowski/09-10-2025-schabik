@@ -1,8 +1,5 @@
 package pl.schabik.domain;
 
-import jakarta.persistence.Embeddable;
-
-@Embeddable
 public record Quantity(Integer value) {
 
     public Quantity {

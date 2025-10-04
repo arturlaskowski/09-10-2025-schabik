@@ -11,9 +11,9 @@ import org.springframework.http.ResponseEntity;
 import pl.schabik.application.CustomerService;
 import pl.schabik.application.dto.CreateCustomerDto;
 import pl.schabik.application.dto.CustomerDto;
-import pl.schabik.infrastructure.CreateCustomerRequest;
-import pl.schabik.infrastructure.CustomerResponse;
-import pl.schabik.infrastructure.ErrorResponse;
+import pl.schabik.infrastructure.web.CreateCustomerRequest;
+import pl.schabik.infrastructure.web.CustomerResponse;
+import pl.schabik.infrastructure.web.ErrorResponse;
 
 import java.util.UUID;
 

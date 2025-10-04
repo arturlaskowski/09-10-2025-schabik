@@ -1,4 +1,4 @@
-package pl.schabik.infrastructure;
+package pl.schabik.infrastructure.web;
 
 import java.time.Instant;
 

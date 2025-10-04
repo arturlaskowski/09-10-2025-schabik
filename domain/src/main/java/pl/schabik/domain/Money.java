@@ -1,11 +1,8 @@
 package pl.schabik.domain;
 
-import jakarta.persistence.Embeddable;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-@Embeddable
 public record Money(BigDecimal amount) {
 
     public static final Money ZERO = new Money(BigDecimal.ZERO);

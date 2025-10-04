@@ -1,41 +1,15 @@
 package pl.schabik.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
 import java.util.UUID;
 
-
-@IdClass(OrderItemId.class)
-@Table(name = "order_items")
-@Entity
 public class OrderItem {
 
-    @Id
     private Integer id;
-
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    private UUID productId;
-
-    @NotNull
-    @AttributeOverride(name = "amount", column = @Column(name = "price"))
-    private Money price;
-
-    @NotNull
-    @AttributeOverride(name = "value", column = @Column(name = "quantity"))
-    private Quantity quantity;
-
-    @NotNull
-    @AttributeOverride(name = "amount", column = @Column(name = "totalPrice"))
-    private Money totalPrice;
-
-    //For JPA
-    protected OrderItem() {
-    }
+    private OrderId orderId;
+    private final UUID productId;
+    private final Money price;
+    private final Quantity quantity;
+    private final Money totalPrice;
 
     public OrderItem(UUID productId, Money price, Quantity quantity, Money totalPrice) {
         this.productId = productId;
@@ -52,8 +26,8 @@ public class OrderItem {
         }
     }
 
-    void initializeBasketItem(Order order, Integer itemNumber) {
-        this.order = order;
+    public void initializeBasketItem(Order order, Integer itemNumber) {
+        this.orderId = order.getId();
         this.id = itemNumber;
     }
 

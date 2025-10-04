@@ -1,4 +1,4 @@
-package pl.schabik.infrastructure;
+package pl.schabik.infrastructure.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

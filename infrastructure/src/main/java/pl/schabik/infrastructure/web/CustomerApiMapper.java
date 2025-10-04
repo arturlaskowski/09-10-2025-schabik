@@ -1,9 +1,12 @@
-package pl.schabik.infrastructure;
+package pl.schabik.infrastructure.web;
 
 import pl.schabik.application.dto.CreateCustomerDto;
 import pl.schabik.application.dto.CustomerDto;
 
 public class CustomerApiMapper {
+
+    private CustomerApiMapper() {
+    }
 
     public static CustomerResponse mapToCustomerResponse(CustomerDto customerDto) {
         return new CustomerResponse(

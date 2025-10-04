@@ -1,15 +1,18 @@
-package pl.schabik.infrastructure;
+package pl.schabik.infrastructure.web;
 
-import pl.schabik.application.dto.*;
-
-import java.util.stream.Collectors;
+import pl.schabik.application.dto.CreateOrderAddressDto;
+import pl.schabik.application.dto.CreateOrderDto;
+import pl.schabik.application.dto.CreateOrderItemDto;
 
 public class OrderApiMapper {
+
+    private OrderApiMapper() {
+    }
 
     public static CreateOrderDto mapToDto(CreateOrderRequest request) {
         var itemDtos = request.items().stream()
                 .map(OrderApiMapper::mapItemToCreateDto)
-                .collect(Collectors.toList());
+                .toList();
 
         var addressDto = mapAddressToDto(request.address());
 

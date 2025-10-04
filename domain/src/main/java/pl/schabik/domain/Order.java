@@ -1,54 +1,18 @@
 package pl.schabik.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import java.time.Instant;
 import java.util.List;
 
-
-@Table(name = "orders")
-@Entity
 public class Order {
 
-    @EmbeddedId
     private OrderId id;
-
-    @NotNull
     private Instant createAt;
-
-    @NotNull
     private Instant lastUpdateAt;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
-
-    @NotNull
-    @AttributeOverride(name = "amount", column = @Column(name = "price"))
-    private Money price;
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
+    private final Customer customer;
+    private final Money price;
     private OrderStatus status;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private OrderAddress address;
-
-    @NotNull
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @Fetch(FetchMode.JOIN)
-    private List<OrderItem> items;
-
-    @Version
-    private int version;
-
-    //For JPA
-    protected Order() {
-    }
+    private final OrderAddress address;
+    private final List<OrderItem> items;
 
     public Order(Customer customer, Money price, List<OrderItem> items, OrderAddress address) {
         this.customer = customer;
@@ -65,6 +29,17 @@ public class Order {
         this.status = OrderStatus.PENDING;
         validatePrice();
         initializeBasketItems();
+    }
+
+    public Order(OrderId id, Instant createAt, Instant lastUpdateAt, Customer customer, Money price, OrderStatus status, OrderAddress address, List<OrderItem> items) {
+        this.id = id;
+        this.createAt = createAt;
+        this.lastUpdateAt = lastUpdateAt;
+        this.customer = customer;
+        this.price = price;
+        this.status = status;
+        this.address = address;
+        this.items = items;
     }
 
     private void validatePrice() {

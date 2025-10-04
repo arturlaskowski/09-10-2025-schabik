@@ -1,10 +1,7 @@
 package pl.schabik.domain;
 
-import jakarta.persistence.Embeddable;
-
 import java.util.UUID;
 
-@Embeddable
 public record OrderId(UUID orderId) {
 
     public static OrderId newOne() {
