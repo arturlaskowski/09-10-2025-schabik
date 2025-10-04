@@ -8,8 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
-import pl.schabik.application.dto.*;
 import pl.schabik.domain.*;
+import pl.schabik.infrastructure.dto.CreateOrderRequest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,10 +39,10 @@ class OrderAcceptanceTest {
             then save order and HTTP 200 status received""")
     void givenRequestToAddOrderForExistingCustomer_whenRequestIsSent_thenOrderSavedAndHttp200() {
         // given
-        var createOrderDto = createOrderDto();
+        var createOrderRequest = createOrderRequest();
 
         // when
-        ResponseEntity<UUID> response = restTemplate.postForEntity(getBaseUrl(), createOrderDto, UUID.class);
+        ResponseEntity<UUID> response = restTemplate.postForEntity(getBaseUrl(), createOrderRequest, UUID.class);
 
         // then
         assertThat(response.getHeaders().getLocation()).isNotNull();
@@ -50,17 +50,17 @@ class OrderAcceptanceTest {
         var savedOrder = orderRepository.findById(new OrderId(UUID.fromString(orderId))).orElseThrow();
         assertThat(savedOrder)
                 .hasNoNullFieldsOrProperties()
-                .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
-                .hasFieldOrPropertyWithValue("price", new Money(createOrderDto.price()))
+                .hasFieldOrPropertyWithValue("customer.id", createOrderRequest.customerId())
+                .hasFieldOrPropertyWithValue("price", new Money(createOrderRequest.price()))
                 .hasFieldOrPropertyWithValue("status", OrderStatus.PENDING)
                 .extracting(Order::getAddress)
-                .hasFieldOrPropertyWithValue("street", createOrderDto.address().street())
-                .hasFieldOrPropertyWithValue("postalCode", createOrderDto.address().postalCode())
-                .hasFieldOrPropertyWithValue("city", createOrderDto.address().city())
-                .hasFieldOrPropertyWithValue("houseNo", createOrderDto.address().houseNo());
+                .hasFieldOrPropertyWithValue("street", createOrderRequest.address().street())
+                .hasFieldOrPropertyWithValue("postalCode", createOrderRequest.address().postalCode())
+                .hasFieldOrPropertyWithValue("city", createOrderRequest.address().city())
+                .hasFieldOrPropertyWithValue("houseNo", createOrderRequest.address().houseNo());
 
-        assertThat(savedOrder.getItems()).hasSize(createOrderDto.items().size())
-                .zipSatisfy(createOrderDto.items(), (orderItem, orderItemDto) -> {
+        assertThat(savedOrder.getItems()).hasSize(createOrderRequest.items().size())
+                .zipSatisfy(createOrderRequest.items(), (orderItem, orderItemDto) -> {
                     assertThat(orderItem.getProductId()).isEqualTo(orderItemDto.productId());
                     assertThat(orderItem.getPrice()).isEqualTo(new Money(orderItemDto.price()));
                     assertThat(orderItem.getQuantity()).isEqualTo(new Quantity(orderItemDto.quantity()));
@@ -68,13 +68,13 @@ class OrderAcceptanceTest {
                 });
     }
 
-    private CreateOrderDto createOrderDto() {
+    private CreateOrderRequest createOrderRequest() {
         var customerId = customerRepository.save(new Customer("Waldek", "Kiepski", "waldek@gmail.com")).getId();
 
-        var items = List.of(new CreateOrderItemDto(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
-                new CreateOrderItemDto(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
-        var address = new CreateOrderAddressDto("Małysza", "94-000", "Adasiowo", "12");
-        return new CreateOrderDto(customerId, new BigDecimal("54.56"), items, address);
+        var items = List.of(new CreateOrderRequest.OrderItemRequest(UUID.randomUUID(), 2, new BigDecimal("10.00"), new BigDecimal("20.00")),
+                new CreateOrderRequest.OrderItemRequest(UUID.randomUUID(), 1, new BigDecimal("34.56"), new BigDecimal("34.56")));
+        var address = new CreateOrderRequest.OrderAddressRequest("Małysza", "94-000", "Adasiowo", "12");
+        return new CreateOrderRequest(customerId, new BigDecimal("54.56"), items, address);
     }
 
     private String getBaseUrl() {
