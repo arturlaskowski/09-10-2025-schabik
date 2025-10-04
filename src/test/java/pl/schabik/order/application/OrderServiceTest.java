@@ -2,6 +2,7 @@ package pl.schabik.order.application;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import pl.schabik.order.CustomerFacadeStub;
 import pl.schabik.order.application.dto.CreateOrderAddressDto;
 import pl.schabik.order.application.dto.CreateOrderDto;
 import pl.schabik.order.application.dto.CreateOrderItemDto;
@@ -20,12 +21,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 class OrderServiceTest {
 
     InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
-    CustomerFacadeStub customerFacade = new CustomerFacadeStub(true);
+    CustomerFacadeStub customerFacade = new CustomerFacadeStub();
     OrderService orderService = new OrderService(orderRepository, customerFacade);
 
     @AfterEach
     void cleanUp() {
         orderRepository.deleteAll();
+        customerFacade.setCustomerExists(true);
     }
 
     @Test
@@ -61,8 +63,7 @@ class OrderServiceTest {
     @Test
     void shouldThrowExceptionWhenCustomerDoesNotExistWhileCreatingOrder() {
         // given
-        var customerFacade = new CustomerFacadeStub(false);
-        var orderService = new OrderService(orderRepository, customerFacade);
+         customerFacade.setCustomerExists(false);
         var nonExistentCustomerId = UUID.randomUUID();
         var createOrderDto = getCreateOrderDto(nonExistentCustomerId);
 

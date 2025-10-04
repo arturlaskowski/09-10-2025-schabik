@@ -1,4 +1,4 @@
-package pl.schabik;
+package pl.schabik.customer;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,9 +9,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.schabik.common.ErrorResponse;
-import pl.schabik.customer.CreateCustomerDto;
-import pl.schabik.customer.CustomerDto;
-import pl.schabik.customer.CustomerService;
 
 import java.util.UUID;
 
@@ -80,20 +77,21 @@ class CustomerAcceptanceTest {
     @DisplayName("""
             given request for creating Customer with all mandatory data correctly,
             when request is sent,
-            then Customer is added and HTTP 200 status received""")
-    void givenRequestForCreatingCustomer_whenRequestIsSent_thenCustomerAddedAndHttp200() {
+            then Customer is added and HTTP 201 status received""")
+    void givenRequestForCreatingCustomer_whenRequestIsSent_thenCustomerAddedAndHttp201() {
         //given
         var createCustomerDto = new CreateCustomerDto("Marianek", "Paździoch", "mario@gemail.com");
 
         //when
-        ResponseEntity<UUID> postResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, UUID.class);
+        ResponseEntity<Void> postResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, Void.class);
 
         //then
-        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(postResponse.getBody()).isNotNull();
+        assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        var location = postResponse.getHeaders().getLocation();
+        var getResponse = restTemplate.getForEntity(location, CustomerDto.class);
+        assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        assertThat(customerService.getCustomer(postResponse.getBody()))
-                .hasNoNullFieldsOrProperties()
+        assertThat(getResponse.getBody())
                 .hasFieldOrPropertyWithValue("firstName", createCustomerDto.firstName())
                 .hasFieldOrPropertyWithValue("lastName", createCustomerDto.lastName())
                 .hasFieldOrPropertyWithValue("email", createCustomerDto.email());

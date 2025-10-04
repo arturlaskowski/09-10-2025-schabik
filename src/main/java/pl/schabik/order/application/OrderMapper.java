@@ -13,6 +13,9 @@ import java.util.List;
 
 public class OrderMapper {
 
+    private OrderMapper() {
+    }
+
     public static List<OrderItem> convertToCreateOrderItems(List<CreateOrderItemDto> itemDtos) {
         return itemDtos.stream()
                 .map(itemDto -> new OrderItem(
