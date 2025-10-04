@@ -8,6 +8,9 @@ import pl.schabik.order.infrastructure.dto.GetOrderResponse;
 
 public class OrderApiMapper {
 
+    private OrderApiMapper() {
+    }
+
     public static CreateOrderDto mapToDto(CreateOrderRequest request) {
         var itemDtos = request.items().stream()
                 .map(OrderApiMapper::mapItemToCreateDto)
