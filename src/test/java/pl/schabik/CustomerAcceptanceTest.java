@@ -8,10 +8,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import pl.schabik.application.CustomerService;
 import pl.schabik.application.dto.CreateCustomerDto;
 import pl.schabik.application.dto.CustomerDto;
+import pl.schabik.infrastructure.CreateCustomerRequest;
+import pl.schabik.infrastructure.CustomerResponse;
 import pl.schabik.infrastructure.ErrorResponse;
-import pl.schabik.application.CustomerService;
 
 import java.util.UUID;
 
@@ -40,8 +42,8 @@ class CustomerAcceptanceTest {
         var customerId = customerService.addCustomer(createCustomerDto);
 
         //when
-        ResponseEntity<CustomerDto> response = restTemplate.getForEntity(
-                getBaseCustomersUrl() + "/" + customerId, CustomerDto.class);
+        ResponseEntity<CustomerResponse> response = restTemplate.getForEntity(
+                getBaseCustomersUrl() + "/" + customerId, CustomerResponse.class);
 
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -83,10 +85,10 @@ class CustomerAcceptanceTest {
             then Customer is added and HTTP 201 status received""")
     void givenRequestForCreatingCustomer_whenRequestIsSent_thenCustomerAddedAndHttp201() {
         //given
-        var createCustomerDto = new CreateCustomerDto("Marianek", "Paździoch", "mario@gemail.com");
+        var createCustomerRequest = new CreateCustomerRequest("Marianek", "Paździoch", "mario@gemail.com");
 
         //when
-        ResponseEntity<Void> postResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, Void.class);
+        ResponseEntity<Void> postResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerRequest, Void.class);
 
         //then
         assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -95,9 +97,9 @@ class CustomerAcceptanceTest {
         assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         assertThat(getResponse.getBody())
-                .hasFieldOrPropertyWithValue("firstName", createCustomerDto.firstName())
-                .hasFieldOrPropertyWithValue("lastName", createCustomerDto.lastName())
-                .hasFieldOrPropertyWithValue("email", createCustomerDto.email());
+                .hasFieldOrPropertyWithValue("firstName", createCustomerRequest.firstName())
+                .hasFieldOrPropertyWithValue("lastName", createCustomerRequest.lastName())
+                .hasFieldOrPropertyWithValue("email", createCustomerRequest.email());
     }
 
     @Test
@@ -110,10 +112,10 @@ class CustomerAcceptanceTest {
         String email = "waldek12@gmail.com";
         customerService.addCustomer(new CreateCustomerDto("Waldemar", "Kiepski", email));
 
-        var createCustomerDto = new CreateCustomerDto("Walduś", "Boczek", email);
+        var createCustomerRequest = new CreateCustomerRequest("Walduś", "Boczek", email);
 
         //when
-        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, ErrorResponse.class);
+        ResponseEntity<ErrorResponse> response = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerRequest, ErrorResponse.class);
 
         //then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
