@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pl.schabik.application.dto.CreateOrderAddressDto;
 import pl.schabik.application.dto.CreateOrderDto;
@@ -47,9 +46,9 @@ class OrderAcceptanceTest {
         ResponseEntity<UUID> response = restTemplate.postForEntity(getBaseUrl(), createOrderDto, UUID.class);
 
         // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        var savedOrder = orderRepository.findById(new OrderId(response.getBody())).orElseThrow();
+        assertThat(response.getHeaders().getLocation()).isNotNull();
+        var orderId = response.getHeaders().getLocation().getPath().split("/")[2];
+        var savedOrder = orderRepository.findById(new OrderId(UUID.fromString(orderId))).orElseThrow();
         assertThat(savedOrder)
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
