@@ -1,4 +1,4 @@
-package pl.schabik.infrastructure;
+package pl.schabik.infrastructure.dto;
 
 import java.time.Instant;
 

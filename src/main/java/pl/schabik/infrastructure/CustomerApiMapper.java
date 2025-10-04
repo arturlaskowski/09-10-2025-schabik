@@ -1,10 +1,14 @@
 package pl.schabik.infrastructure;
 
-
+import pl.schabik.infrastructure.dto.CreateCustomerRequest;
+import pl.schabik.infrastructure.dto.CustomerResponse;
 import pl.schabik.usecase.createcustomer.CreateCustomerDto;
 import pl.schabik.usecase.getcustomer.CustomerDto;
 
 public class CustomerApiMapper {
+
+    private CustomerApiMapper() {
+    }
 
     public static CustomerResponse mapToCustomerResponse(CustomerDto customerDto) {
         return new CustomerResponse(

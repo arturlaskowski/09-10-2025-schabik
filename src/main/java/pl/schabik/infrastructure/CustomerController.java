@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import pl.schabik.infrastructure.dto.CreateCustomerRequest;
+import pl.schabik.infrastructure.dto.CustomerResponse;
 import pl.schabik.usecase.createcustomer.CreateCustomerService;
 import pl.schabik.usecase.getcustomer.GetCustomerService;
 
@@ -42,4 +44,5 @@ public class CustomerController {
         return ResponseEntity.created(location).build();
     }
 }
+
 
