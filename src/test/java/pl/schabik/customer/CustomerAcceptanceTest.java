@@ -78,20 +78,20 @@ class CustomerAcceptanceTest {
     @DisplayName("""
             given request for creating Customer with all mandatory data correctly,
             when request is sent,
-            then Customer is added and HTTP 200 status received""")
-    void givenRequestForCreatingCustomer_whenRequestIsSent_thenCustomerAddedAndHttp200() {
+            then Customer is added and HTTP 201 status received""")
+    void givenRequestForCreatingCustomer_whenRequestIsSent_thenCustomerAddedAndHttp201() {
         //given
         var createCustomerDto = new CreateCustomerDto("Marianek", "Paździoch", "mario@gemail.com");
 
         //when
-        ResponseEntity<UUID> postResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, UUID.class);
+        ResponseEntity<Void> postResponse = restTemplate.postForEntity(getBaseCustomersUrl(), createCustomerDto, Void.class);
 
         //then
         assertThat(postResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(postResponse.getHeaders().getLocation()).isNotNull();
-
         var customerId = UUID.fromString(UriComponentsBuilder.fromUri(postResponse.getHeaders().getLocation())
                 .build().getPathSegments().getLast());
+
         assertThat(customerService.getCustomer(customerId))
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("firstName", createCustomerDto.firstName())
