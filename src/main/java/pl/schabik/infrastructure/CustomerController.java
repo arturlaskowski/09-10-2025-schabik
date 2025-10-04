@@ -4,6 +4,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.schabik.application.CustomerService;
+import pl.schabik.infrastructure.dto.CreateCustomerRequest;
+import pl.schabik.infrastructure.dto.CustomerResponse;
 
 import java.util.UUID;
 
