@@ -1,7 +1,6 @@
 
 package pl.schabik;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +52,11 @@ class OrderAcceptanceTest {
         ResponseEntity<UUID> response = restTemplate.postForEntity(getBaseUrl(), createOrderDto, UUID.class);
 
         // then
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        var savedOrder = orderRepository.findById(response.getBody()).orElseThrow();
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getHeaders().getLocation()).isNotNull();
+        var orderId = response.getHeaders().getLocation().getPath().split("/")[2];
+
+        var savedOrder = orderRepository.findById(UUID.fromString(orderId)).orElseThrow();
         assertThat(savedOrder)
                 .hasNoNullFieldsOrProperties()
                 .hasFieldOrPropertyWithValue("customer.id", createOrderDto.customerId())
