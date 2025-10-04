@@ -9,13 +9,14 @@ import pl.schabik.domain.OrderStatus;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Table(name = "orders")
 @Entity
 public class JpaOrderEntity {
 
-    @EmbeddedId
-    private JpaOrderId id;
+    @Id
+    private UUID id;
 
     @NotNull
     private Instant createAt;
@@ -50,8 +51,8 @@ public class JpaOrderEntity {
     protected JpaOrderEntity() {
     }
 
-    public JpaOrderEntity(JpaOrderId id, Instant createAt, Instant lastUpdateAt, JpaCustomerEntity customer, 
-                         BigDecimal price, OrderStatus status, JpaOrderAddressEntity address, List<JpaOrderItemEntity> items) {
+    public JpaOrderEntity(UUID id, Instant createAt, Instant lastUpdateAt, JpaCustomerEntity customer,
+                          BigDecimal price, OrderStatus status, JpaOrderAddressEntity address, List<JpaOrderItemEntity> items) {
         this.id = id;
         this.createAt = createAt;
         this.lastUpdateAt = lastUpdateAt;
@@ -62,7 +63,7 @@ public class JpaOrderEntity {
         this.items = items;
     }
 
-    public JpaOrderId getId() {
+    public UUID getId() {
         return id;
     }
 

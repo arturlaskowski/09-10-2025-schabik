@@ -22,7 +22,7 @@ public class PersistenceToDomainMapper {
         Customer customer = toDomain(entity.getCustomer());
         OrderAddress address = toDomain(entity.getAddress());
 
-        OrderId orderId = toDomainOrderId(entity.getId());
+        OrderId orderId = new OrderId(entity.getId());
         Money price = new Money(entity.getPrice());
 
         List<OrderItem> items = entity.getItems().stream()
@@ -70,9 +70,5 @@ public class PersistenceToDomainMapper {
                 quantity,
                 totalPrice
         );
-    }
-
-    public static OrderId toDomainOrderId(JpaOrderId jpaOrderId) {
-        return new OrderId(jpaOrderId.orderId());
     }
 }

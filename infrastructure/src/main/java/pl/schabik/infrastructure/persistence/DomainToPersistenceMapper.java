@@ -1,6 +1,9 @@
 package pl.schabik.infrastructure.persistence;
 
-import pl.schabik.domain.*;
+import pl.schabik.domain.Customer;
+import pl.schabik.domain.Order;
+import pl.schabik.domain.OrderAddress;
+import pl.schabik.domain.OrderItem;
 
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class DomainToPersistenceMapper {
         JpaOrderAddressEntity jpaAddress = toJpaEntity(order.getAddress());
 
         JpaOrderEntity jpaOrder = new JpaOrderEntity(
-                toJpaOrderId(order.getId()),
+                order.getId().id(),
                 order.getCreateAt(),
                 order.getLastUpdateAt(),
                 jpaCustomer,
@@ -63,9 +66,5 @@ public class DomainToPersistenceMapper {
                 item.getQuantity().value(),
                 item.getTotalPrice().amount()
         );
-    }
-
-    public static JpaOrderId toJpaOrderId(OrderId orderId) {
-        return new JpaOrderId(orderId.orderId());
     }
 }
