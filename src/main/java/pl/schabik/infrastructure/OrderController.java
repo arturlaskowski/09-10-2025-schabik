@@ -2,12 +2,15 @@ package pl.schabik.infrastructure;
 
 
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.schabik.application.OrderService;
 import pl.schabik.domain.OrderId;
 import pl.schabik.infrastructure.dto.CreateOrderRequest;
 import pl.schabik.infrastructure.dto.GetOrderResponse;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RestController
@@ -21,9 +24,16 @@ public class OrderController {
     }
 
     @PostMapping
-    public UUID createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
+    public ResponseEntity<Void> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
         var createOrderDto = OrderApiMapper.mapToDto(createOrderRequest);
-        return orderService.createOrder(createOrderDto).id();
+        var orderId = orderService.createOrder(createOrderDto);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(orderId.id())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/{id}")
